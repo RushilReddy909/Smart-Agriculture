@@ -13,7 +13,7 @@ import { api } from "../utils/api";
 
 // 1. Define the validation schema with Yup
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
+  username: Yup.string()
     .required("Full name is required")
     .min(2, "Name must be at least 2 characters"),
   email: Yup.string()
@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .required("Password is required")
     .min(6, "Password must be at least 6 characters"),
-  confirmPassword: Yup.string()
+  cnfpass: Yup.string()
     .required("Please confirm your password")
     .oneOf([Yup.ref("password"), null], "Passwords must match"),
   terms: Yup.bool().oneOf([true], "You must accept the terms and conditions"),
@@ -44,7 +44,7 @@ function Signup() {
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
     try {
-      const res = await api.post("/api/auth/register", data);
+      const res = await api.post("/auth/register", data);
 
       //TODO toast
       navigate("/login");
@@ -75,11 +75,11 @@ function Signup() {
               {/* 5. Use the register function and connect errors */}
               <Input
                 type="text"
-                name="name"
+                name="username"
                 label="Full Name"
                 placeholder="Enter your full name"
                 error={errors.name?.message}
-                {...register("name")}
+                {...register("username")}
               />
 
               <Input
@@ -102,11 +102,11 @@ function Signup() {
 
               <Input
                 type="password"
-                name="confirmPassword"
+                name="cnfpass"
                 label="Confirm Password"
                 placeholder="Confirm your password"
                 error={errors.confirmPassword?.message}
-                {...register("confirmPassword")}
+                {...register("cnfpass")}
               />
 
               <div className="flex items-start">

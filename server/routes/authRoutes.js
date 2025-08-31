@@ -5,7 +5,7 @@ import {
   logoutUser,
   refreshToken,
   registerUser,
-} from "../controllers/authController";
+} from "../controllers/authController.js";
 
 const registerValidation = [
   body("username")

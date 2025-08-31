@@ -35,7 +35,7 @@ function Login() {
   const onSubmit = async (data) => {
     // Simulate API call
     try {
-      const res = await api.post("/api/auth/login", data);
+      const res = await api.post("/auth/login", data);
       
       const token = res.data.accessToken;
       localStorage.setItem("token", token);

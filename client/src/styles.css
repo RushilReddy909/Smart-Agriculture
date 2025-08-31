@@ -99,7 +99,7 @@
   font-family: var(--font-family-primary);
   
   &:hover {
-    background-color: var(--color-primary-700);
+    background: var(--color-primary-700);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
   }
@@ -127,7 +127,7 @@
   font-family: var(--font-family-primary);
   
   &:hover {
-    background: var(--color-gray-200);
+    background-color: var(--color-gray-200);
     border-color: var(--color-gray-300);
     transform: translateY(-1px);
   }

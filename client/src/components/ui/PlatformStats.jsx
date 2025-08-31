@@ -1,0 +1,67 @@
+import React from 'react';
+
+const PlatformStats = () => {
+  const stats = [
+    {
+      number: "100+",
+      label: "Crop Types",
+      description: "Supported varieties"
+    },
+    {
+      number: "24/7",
+      label: "Monitoring",
+      description: "Real-time tracking"
+    },
+    {
+      number: "AI",
+      label: "Powered",
+      description: "Smart insights"
+    }
+  ];
+
+  return (
+    <div className="mt-12 pt-8 border-t border-gray-200">
+      <p className="text-sm text-gray-500 mb-4">Platform Ready for Modern Farming</p>
+      <div className="flex justify-center items-center space-x-8 opacity-60">
+        {stats.map((stat, index) => (
+          <React.Fragment key={index}>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-400">{stat.number}</div>
+            </div>
+            {index < stats.length - 1 && (
+              <div className="w-px h-8 bg-gray-300"></div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+      <div className="flex justify-center items-center space-x-8 mt-2">
+        {stats.map((stat, index) => (
+          <div key={index} className="text-center">
+            <div className="text-xs text-gray-400">{stat.label}</div>
+            <div className="text-xs text-gray-300">{stat.description}</div>
+          </div>
+        ))}
+      </div>
+      
+      {/* Additional Platform Features */}
+      <div className="mt-6 flex justify-center">
+        <div className="flex items-center space-x-6 text-xs text-gray-500">
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            Cloud-based platform
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            Mobile responsive
+          </div>
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            Multi-language support
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PlatformStats;

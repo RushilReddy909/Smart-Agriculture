@@ -1,0 +1,37 @@
+{
+  "name": "smart-agriculture",
+  "version": "1.0.0",
+  "description": "Smart Agriculture IOT",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev:server": "nodemon server/server.js",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "start": "NODE_ENV=development server/server.js",
+    "build": "npm install && cd client && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RushilReddy909/Smart-Agriculture.git"
+  },
+  "author": "Rushil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RushilReddy909/Smart-Agriculture/issues"
+  },
+  "homepage": "https://github.com/RushilReddy909/Smart-Agriculture#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.10"
+  }
+}

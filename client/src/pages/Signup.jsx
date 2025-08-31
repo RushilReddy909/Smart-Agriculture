@@ -1,50 +1,56 @@
 // Signup.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import Card from '../components/ui/Card';
-import Input from '../components/ui/Input';
-import Button from '../components/ui/Button';
-import Container from '../components/layout/Container';
-import { TbUserSquareRounded } from 'react-icons/tb';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import Card from "../components/ui/Card";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
+import Container from "../components/layout/Container";
+import { TbUserSquareRounded } from "react-icons/tb";
+import { api } from "../utils/api";
 
 // 1. Define the validation schema with Yup
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .required('Full name is required')
-    .min(2, 'Name must be at least 2 characters'),
+    .required("Full name is required")
+    .min(2, "Name must be at least 2 characters"),
   email: Yup.string()
-    .required('Email is required')
-    .email('Please enter a valid email'),
+    .required("Email is required")
+    .email("Please enter a valid email"),
   password: Yup.string()
-    .required('Password is required')
-    .min(6, 'Password must be at least 6 characters'),
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
   confirmPassword: Yup.string()
-    .required('Please confirm your password')
-    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-  terms: Yup.bool()
-    .oneOf([true], 'You must accept the terms and conditions'),
+    .required("Please confirm your password")
+    .oneOf([Yup.ref("password"), null], "Passwords must match"),
+  terms: Yup.bool().oneOf([true], "You must accept the terms and conditions"),
 });
 
 function Signup() {
   // 2. Initialize useForm with the Yup resolver
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors, isSubmitting } 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: 'onTouched' // Validate fields when the user clicks out of them
+    mode: "onTouched", // Validate fields when the user clicks out of them
   });
+
+  const navigate = useNavigate();
 
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    console.log(data);
-    alert(`Account created successfully! Welcome, ${data.name}!`);
+    try {
+      const res = await api.post("/api/auth/register", data);
+
+      //TODO toast
+      navigate("/login");
+    } catch (err) {
+      //TODO toast
+    }
   };
 
   return (
@@ -73,7 +79,7 @@ function Signup() {
                 label="Full Name"
                 placeholder="Enter your full name"
                 error={errors.name?.message}
-                {...register('name')}
+                {...register("name")}
               />
 
               <Input
@@ -82,7 +88,7 @@ function Signup() {
                 label="Email Address"
                 placeholder="Enter your email"
                 error={errors.email?.message}
-                {...register('email')}
+                {...register("email")}
               />
 
               <Input
@@ -91,7 +97,7 @@ function Signup() {
                 label="Password"
                 placeholder="Create a password"
                 error={errors.password?.message}
-                {...register('password')}
+                {...register("password")}
               />
 
               <Input
@@ -100,37 +106,38 @@ function Signup() {
                 label="Confirm Password"
                 placeholder="Confirm your password"
                 error={errors.confirmPassword?.message}
-                {...register('confirmPassword')}
+                {...register("confirmPassword")}
               />
 
               <div className="flex items-start">
                 <input
                   type="checkbox"
                   id="terms"
-                  {...register('terms')}
+                  {...register("terms")}
                   className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 mt-1"
                 />
                 <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
-                  I agree to the{' '}
-                  <Link to="/terms" className="text-green-600 hover:text-green-700 font-medium">
+                  I agree to the{" "}
+                  <Link
+                    to="/terms"
+                    className="text-green-600 hover:text-green-700 font-medium"
+                  >
                     Terms of Service
                   </Link>
                 </label>
               </div>
-              {errors.terms && <p className="text-sm text-red-600">{errors.terms.message}</p>}
+              {errors.terms && (
+                <p className="text-sm text-red-600">{errors.terms.message}</p>
+              )}
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Creating Account...' : 'Create Account'}
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </Button>
             </form>
 
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <Link
                   to="/login"
                   className="font-medium text-green-600 hover:text-green-700"
@@ -139,7 +146,7 @@ function Signup() {
                 </Link>
               </p>
             </div>
-            
+
             {/* Social signup options remain the same */}
           </Card>
         </div>

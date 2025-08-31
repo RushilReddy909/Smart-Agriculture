@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import {
   loginUser,
   logoutUser,
-  refreshToken,
+  refreshUserToken,
   registerUser,
 } from "../controllers/authController.js";
 
@@ -64,8 +64,15 @@ router.post("/login", loginValidation, loginUser);
 
 router.post("/register", registerValidation, registerUser);
 
-router.post("/refresh", refreshToken);
+router.post("/refresh", refreshUserToken);
 
 router.post("/logout", logoutUser);
+
+router.get("/verify", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "Token Verified",
+  });
+});
 
 export default router;

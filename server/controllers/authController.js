@@ -37,6 +37,10 @@ const loginUser = async (req, res) => {
       expiresIn: "15m",
     });
 
+    const refreshToken = jwt.sign({ id: found._id }, process.env.JWT_REFRESH, {
+      expiresIn: "1d",
+    });
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -103,7 +107,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const refreshToken = async (req, res) => {
+const refreshUserToken = async (req, res) => {
   try {
     const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
 
@@ -114,7 +118,7 @@ const refreshToken = async (req, res) => {
       });
     }
 
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
+    jwt.verify(refreshToken, process.env.JWT_REFRESH, (err, decoded) => {
       if (err) {
         return res.status(403).json({
           success: false,
@@ -169,4 +173,4 @@ const logoutUser = async (req, res) => {
   }
 };
 
-export { loginUser, registerUser, refreshToken, logoutUser };
+export { loginUser, registerUser, refreshUserToken, logoutUser };

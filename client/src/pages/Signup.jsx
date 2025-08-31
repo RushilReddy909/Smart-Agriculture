@@ -78,7 +78,7 @@ function Signup() {
                 name="username"
                 label="Full Name"
                 placeholder="Enter your full name"
-                error={errors.name?.message}
+                error={errors.username?.message}
                 {...register("username")}
               />
 
@@ -105,7 +105,7 @@ function Signup() {
                 name="cnfpass"
                 label="Confirm Password"
                 placeholder="Confirm your password"
-                error={errors.confirmPassword?.message}
+                error={errors.cnfpass?.message}
                 {...register("cnfpass")}
               />
 

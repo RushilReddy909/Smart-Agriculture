@@ -97,6 +97,7 @@ const registerUser = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "User created successfully",
+      user: newUser,
     });
   } catch (err) {
     return res.status(500).json({

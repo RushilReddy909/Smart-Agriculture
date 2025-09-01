@@ -1,5 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 import {
   loginUser,
   logoutUser,
@@ -68,7 +69,7 @@ router.post("/refresh", refreshUserToken);
 
 router.post("/logout", logoutUser);
 
-router.get("/verify", (req, res) => {
+router.get("/verify", verifyToken, (req, res) => {
   return res.status(200).json({
     success: true,
     message: "Token Verified",

@@ -11,11 +11,20 @@ const Navigation = () => {
   const isActive = (path) => location.pathname === path;
   
   const navLinks = [
-    { path: '/', label: 'Home' },
+    { path: '/', label: 'About Us' },
+    { path: '/features', label: 'Explore Features',/* public: false */}, 
     { path: '/login', label: 'Login' },
     { path: '/signup', label: 'Sign Up' }
   ];
   
+  const getLinkClassName = (path) => {
+    return `px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+      isActive(path)
+        ? 'bg-green-100 text-green-700'
+        : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
+    }`;
+  };
+
   return (
     <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,11 +45,7 @@ const Navigation = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  isActive(link.path)
-                    ? 'bg-green-100 text-green-700'
-                    : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
-                }`}
+                className={getLinkClassName(link.path)}
               >
                 {link.label}
               </Link>
@@ -72,11 +77,7 @@ const Navigation = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                    isActive(link.path)
-                      ? 'bg-green-100 text-green-700'
-                      : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
-                  }`}
+                  className={getLinkClassName(link.path)}
                 >
                   {link.label}
                 </Link>

@@ -6,7 +6,7 @@ import express from "express";
 import connectDB from "./config/connectDB.js";
 
 import authRoutes from "./routes/authRoutes.js";
-import "./middlewares/redisCache.js";
+// import "./middlewares/redisCache.js";
 
 const PORT = process.env.PORT || 5000;
 const app = express();

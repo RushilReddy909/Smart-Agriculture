@@ -36,12 +36,12 @@ function Login() {
     // Simulate API call
     try {
       const res = await api.post("/auth/login", data);
-      
+
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
 
       //TODO Toast
-      navigate("/");
+      navigate("/features");
     } catch (err) {
       //TODO Toast
     }

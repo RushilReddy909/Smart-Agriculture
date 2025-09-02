@@ -1,30 +1,10 @@
-import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { api } from "../utils/api";
+import useAuthStore from "../store/useAuthStore";
 
 const PublicRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const { isAuthenticated, loading } = useAuthStore();
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      try {
-        const res = await api.get("/auth/verify");
-        setIsAuthenticated(true);
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-
-    verifyToken();
-  }, []);
-
-  if (isAuthenticated === null) {
+  if (loading || isAuthenticated === null) {
     return null;
   }
 

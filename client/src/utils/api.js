@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAuthStore from "../store/useAuthStore";
 
 const api = axios.create({
   baseURL: "/api",
@@ -39,8 +40,7 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
       } catch (err) {
-        // Refresh failed → redirect to login
-        window.location.href = "/login";
+        useAuthStore.getState().logout();
         return Promise.reject(err);
       }
     }

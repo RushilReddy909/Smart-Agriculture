@@ -44,7 +44,7 @@ const loginUser = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -152,7 +152,7 @@ const logoutUser = async (req, res) => {
     const userID = req.user?.id;
 
     if (userID) {
-      await authModel.findByIdAndDelete(userID, { refreshToken: null });
+      await authModel.findByIdAndUpdate(userID, { refreshToken: null });
     }
 
     res.clearCookie("refreshToken", {

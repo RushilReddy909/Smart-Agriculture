@@ -10,6 +10,7 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Container from "../components/layout/Container";
 import { TbUserSquareRounded } from "react-icons/tb";
+import useAuthStore from "../store/useAuthStore";
 
 // 1. Define the validation schema with Yup
 const validationSchema = Yup.object().shape({
@@ -30,17 +31,17 @@ function Login() {
   });
 
   const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
 
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
     // Simulate API call
     try {
       const res = await api.post("/auth/login", data);
-
       const token = res.data.accessToken;
-      localStorage.setItem("token", token);
 
       //TODO Toast
+      login(token);
       navigate("/features");
     } catch (err) {
       //TODO Toast

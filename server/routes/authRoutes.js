@@ -67,7 +67,7 @@ router.post("/register", registerValidation, registerUser);
 
 router.post("/refresh", refreshUserToken);
 
-router.post("/logout", logoutUser);
+router.post("/logout", verifyToken, logoutUser);
 
 router.get("/verify", verifyToken, (req, res) => {
   return res.status(200).json({

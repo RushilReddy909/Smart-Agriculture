@@ -23,7 +23,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Route>
-
           <Route element={<ProtectedRoute />}>
             <Route path="/features" element={<Features />} />
             <Route path="/crop-suggestion" element={<CropSuggestion />} />

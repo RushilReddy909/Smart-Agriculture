@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../components/layout/Container';
 import Card from '../components/ui/Card';
-import { TbPlant2, TbSun, TbCloudRain } from 'react-icons/tb';
+import { TbPlant2, TbSun, TbBrain, TbCloudRain } from 'react-icons/tb';
 
 // Data for our feature cards
 const featuresList = [
@@ -15,6 +15,15 @@ const featuresList = [
     bgColor: 'bg-green-100',
   },
   {
+    title: 'AI Crop Prediction',
+    description: "Provide your farm's specific data to our AI model to get a hyper-personalized crop prediction.",
+    icon: <TbBrain size={32} />,
+    path: '/crop-prediction', // No link for now
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-100',
+    //disabled: true,
+  },
+    {
     title: 'Weather Prediction',
     description: 'Coming soon: Access accurate weather forecasts to plan your farming activities.',
     icon: <TbCloudRain size={32} />,

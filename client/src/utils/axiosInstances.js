@@ -49,4 +49,4 @@ api.interceptors.response.use(
   }
 );
 
-export { api, mli };
+export { api };

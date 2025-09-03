@@ -3,7 +3,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { api } from "../utils/api";
+import { api } from "../utils/axiosInstances";
 import * as Yup from "yup";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";

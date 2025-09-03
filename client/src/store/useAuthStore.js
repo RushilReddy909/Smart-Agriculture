@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { api } from "../utils/api";
+import { api } from "../utils/axiosInstances";
 
 const useAuthStore = create((set) => ({
   isAuthenticated: null, // null = unknown, true/false after verification

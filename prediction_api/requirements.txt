@@ -1,0 +1,15 @@
+# Core web framework
+fastapi
+uvicorn
+pydantic
+python-multipart
+dotenv
+
+# Machine Learning & Data Handling
+torch
+numpy
+pandas
+scikit-learn
+
+# For making external API calls (used in utils)
+requests

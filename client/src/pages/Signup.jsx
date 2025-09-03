@@ -9,7 +9,7 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Container from "../components/layout/Container";
 import { TbUserSquareRounded } from "react-icons/tb";
-import { api } from "../utils/api";
+import { api } from "../utils/axiosInstances";
 
 // 1. Define the validation schema with Yup
 const validationSchema = Yup.object().shape({

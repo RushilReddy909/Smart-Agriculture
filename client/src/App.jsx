@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Features from "./pages/Features";
 import CropSuggestion from "./pages/CropSuggestion";
+import CropAi from "./pages/CropAi";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
@@ -26,6 +27,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/features" element={<Features />} />
             <Route path="/crop-suggestion" element={<CropSuggestion />} />
+            <Route path="/crop-prediction" element={<CropAi />} />
           </Route>
           <Route path="*" element={<Home />} />
         </Routes>

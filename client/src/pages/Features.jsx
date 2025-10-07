@@ -2,44 +2,53 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../components/layout/Container';
 import Card from '../components/ui/Card';
-import { TbPlant2, TbSun, TbBrain, TbCloudRain } from 'react-icons/tb';
+import { TbPlant2, TbSun, TbBrain } from 'react-icons/tb';
+import { FaCloudSun } from 'react-icons/fa'; // Import a weather icon
 
-// Data for our feature cards
 const featuresList = [
   {
     title: 'Seasonal Crop Suggestions',
-    description: 'Get personalized crop recommendations based on the current agricultural season.',
+    description: 'Get general crop recommendations based on the current agricultural season.',
     icon: <TbPlant2 size={32} />,
     path: '/crop-suggestion',
     color: 'text-green-600',
     bgColor: 'bg-green-100',
   },
   {
-    title: 'AI Crop Prediction',
-    description: "Provide your farm's specific data to our AI model to get a hyper-personalized crop prediction.",
+    title: (
+      <>
+        AI Crop
+        <br />
+        Prediction
+      </>
+    ),
+    description: "Provide your farm's data to our AI model to get a hyper-personalized crop prediction.",
     icon: <TbBrain size={32} />,
-    path: '/crop-prediction', // No link for now
+    path: '/crop-prediction',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
-    //disabled: true,
   },
-    {
-    title: 'Weather Prediction',
-    description: 'Coming soon: Access accurate weather forecasts to plan your farming activities.',
-    icon: <TbCloudRain size={32} />,
-    path: '#', // No link for now
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-100',
-    disabled: true,
+  {
+    title: (
+      <>
+        Weather
+        <br />
+        Prediction
+      </>
+    ),
+    description: 'Get a 7-day weather forecast for your location to help you plan farming activities.',
+    icon: <FaCloudSun size={32} />,
+    path: '/weather-prediction',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-100',
+    disabled: false,
   },
-  // Add more features here in the future
 ];
 
 const Features = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <Container>
-        {/* Page Header */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="inline-block bg-yellow-100 text-yellow-700 p-4 rounded-2xl mb-4">
             <TbSun size={40} />
@@ -51,13 +60,11 @@ const Features = () => {
             Discover all the features designed to help you farm smarter.
           </p>
         </div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
           {featuresList.map((feature, index) => (
             <Link 
               to={feature.disabled ? '#' : feature.path} 
-              key={index} 
+              key={index}
               className={feature.disabled ? 'pointer-events-none' : ''}
             >
               <Card
@@ -74,11 +81,6 @@ const Features = () => {
                 <p className="text-body text-gray-600">
                   {feature.description}
                 </p>
-                {feature.disabled && (
-                  <div className="mt-4 px-3 py-1 bg-gray-200 text-gray-600 text-xs font-bold rounded-full self-center">
-                    COMING SOON
-                  </div>
-                )}
               </Card>
             </Link>
           ))}
@@ -89,3 +91,4 @@ const Features = () => {
 };
 
 export default Features;
+

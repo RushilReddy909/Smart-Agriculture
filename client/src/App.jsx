@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import Features from "./pages/Features";
 import CropSuggestion from "./pages/CropSuggestion";
 import CropAi from "./pages/CropAi";
+import Weather from "./pages/WeatherPrediction";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/features" element={<Features />} />
             <Route path="/crop-suggestion" element={<CropSuggestion />} />
             <Route path="/crop-prediction" element={<CropAi />} />
+            <Route path="/weather-prediction" element={<Weather />} />
           </Route>
           <Route path="*" element={<Home />} />
         </Routes>

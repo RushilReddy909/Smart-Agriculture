@@ -1,13 +1,12 @@
 import React from 'react';
 
+// 1. Rename 'as' to 'Component' and set a default value
 const Button = ({ 
   children, 
   variant = 'primary', 
   size = 'md', 
   className = '', 
-  disabled = false,
-  onClick,
-  type = 'button',
+  as: Component = 'button', // <-- EDIT THIS LINE
   ...props 
 }) => {
   const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -27,16 +26,14 @@ const Button = ({
   
   const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`;
   
+  // 2. Render the dynamic 'Component' instead of a hardcoded 'button'
   return (
-    <button
-      type={type}
+    <Component
       className={classes}
-      disabled={disabled}
-      onClick={onClick}
       {...props}
     >
       {children}
-    </button>
+    </Component>
   );
 };
 

@@ -9,6 +9,7 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, verifyToken, logout } = useAuthStore();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     verifyToken(); // run once on mount
@@ -38,6 +39,17 @@ const Navigation = () => {
         : "text-gray-600 hover:text-green-600 hover:bg-green-50"
     }`;
 
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      await logout();
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,14 +78,18 @@ const Navigation = () => {
 
             {isAuthenticated && (
               <button
-                onClick={logout}
-                className="px-4 py-2 flex justify-center items-center rounded-lg font-medium 
-             text-gray-600 border border-gray-300 bg-white
-             hover:text-red-600 hover:border-red-400 hover:bg-red-50 
-             shadow-sm transition-all duration-200"
+                onClick={handleLogout}
+                disabled={loading}
+                className={`px-4 py-2 flex justify-center items-center rounded-lg font-medium 
+                border shadow-sm transition-all duration-200
+                ${
+                  loading
+                    ? "bg-red-400 text-white border-red-400 cursor-not-allowed opacity-70"
+                    : "bg-red-500 text-white border-red-500 hover:bg-red-600 hover:border-red-600"
+                }`}
               >
                 <MdLogout className="me-2 text-lg" />
-                Logout
+                {loading ? "Logging out..." : "Logout"}
               </button>
             )}
           </div>

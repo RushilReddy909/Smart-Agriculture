@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Button from '../ui/Button';
-import Container from '../layout/Container';
-import PlatformStats from '../ui/PlatformStats';
+import React from "react";
+import { Link } from "react-router-dom";
+import Button from "../ui/Button";
+import Container from "../layout/Container";
+import PlatformStats from "../ui/PlatformStats";
 
 const HeroSection = () => {
   return (
@@ -13,30 +13,29 @@ const HeroSection = () => {
         <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
         <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
       </div>
-      
+
       <Container className="relative z-10">
         <div className="text-center animate-fade-in">
           {/* Main Heading */}
           <h1 className="heading-primary text-gray-900 mb-6">
-            Welcome to{' '}
-            <span className="text-gradient">Smart Agriculture</span>
+            Welcome to <span className="text-gradient">Smart Agriculture</span>
             <span className="text-4xl ml-2">🌾</span>
           </h1>
-          
+
           {/* Subtitle */}
           <p className="text-body-large max-w-3xl mx-auto mb-8 leading-relaxed">
-            Empowering farmers with smart solutions — crop suggestions, pest control, 
-            weather predictions, and more. Available in multiple languages to serve 
-            farming communities worldwide.
+            Empowering farmers with smart solutions — crop suggestions, pest
+            control, weather predictions, and more. Available in multiple
+            languages to serve farming communities worldwide.
           </p>
-          
+
           {/* Feature Highlights */}
           <div className="flex flex-wrap justify-center gap-4 mb-10">
             {[
-              '🌱 Smart Crop Management',
-              '🌤️ Weather Predictions',
-              '🔬 Pest Control Solutions',
-              '📊 Data Analytics'
+              "🌱 Smart Crop Management",
+              "🌤️ Weather Predictions",
+              "🔬 Pest Control Solutions",
+              "📊 Data Analytics",
             ].map((feature, index) => (
               <div
                 key={index}
@@ -46,28 +45,25 @@ const HeroSection = () => {
               </div>
             ))}
           </div>
-          
+
           {/* Call to Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              as={Link}
-              to="/signup"
-              size="lg"
-              className="min-w-[200px] shadow-lg hover:shadow-xl"
-            >
-              Get Started Free
-            </Button>
-            <Button
-              as={Link}
-              to="/login"
-              variant="outline"
-              size="lg"
-              className="min-w-[200px]"
-            >
-              Sign In
-            </Button>
+            <Link to="/signup">
+              <Button
+                size="lg"
+                className="min-w-[200px] shadow-lg hover:shadow-xl"
+              >
+                Get Started Free
+              </Button>
+            </Link>
+
+            <Link to="/login">
+              <Button variant="outline" size="lg" className="min-w-[200px]">
+                Sign In
+              </Button>
+            </Link>
           </div>
-          
+
           {/* Platform Capabilities */}
           <PlatformStats />
         </div>

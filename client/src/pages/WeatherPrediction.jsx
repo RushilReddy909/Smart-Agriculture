@@ -23,6 +23,8 @@ const formatDate = (timestamp) => {
   return date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
 };
 
+const apiKey = process.env.WEATHER_API_KEY;
+
 const WeatherPrediction = () => {
   const [city, setCity] = useState('Indore');
   const [weatherData, setWeatherData] = useState(null);
@@ -30,7 +32,7 @@ const WeatherPrediction = () => {
   const [error, setError] = useState('');
   const [showForecast, setShowForecast] = useState(false);
 
-  const handleFetchWeather = (e) => {
+  const handleFetchWeather = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
@@ -41,19 +43,92 @@ const WeatherPrediction = () => {
       document.getElementById('forecast-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
 
-    // --- MOCK API CALL ---
-    // This simulates an API call. Replace this with a real API call to a weather service.
-    setTimeout(() => {
-      if (city.toLowerCase() === 'error') {
-        setError('City not found. Please try another location.');
-      } else {
-        setWeatherData({
-          current: { dt: 1665147600, temp: 25, weather: [{ description: 'clear sky' }], humidity: 60, wind_speed: 5 },
-          daily: Array(7).fill({ dt: 1665147600, temp: { max: 28, min: 18 }, weather: [{ description: 'haze' }] })
-        });
-      }
+    // This simulates API call to fetch weather data.
+    try {
+      // Find closest matching city
+      const geoRes = await axios.get(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(
+          city
+        )}&limit=1&appid=${apiKey}`
+      );
+
+      if (!geoRes.data || !geoRes.data.length)
+        throw new Error("City not found");
+      const { lat, lon, name, state, country } = geoRes.data[0];
+      const approximateCity = `${name}${state ? ", " + state : ""}, ${country}`;
+
+      // Fetch current weather
+      const currentRes = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`
+      );
+
+      const current = currentRes.data;
+
+      // Fetch air pollution (AQI)
+      const aqiRes = await axios.get(
+        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`
+      );
+
+      const aqi = (aqiRes.data.list && aqiRes.data.list[0]?.main?.aqi) || null;
+
+      // Fetch 5-day forecast
+      const forecastRes = await axios.get(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`
+      );
+
+      const forecastList = forecastRes.data?.list || [];
+      const dailyMap = {};
+      forecastList.forEach((f) => {
+        const date = new Date(f.dt * 1000).toISOString().split("T")[0];
+        if (!dailyMap[date])
+          dailyMap[date] = {
+            min: f.main.temp_min,
+            max: f.main.temp_max,
+            description: f.weather[0].description,
+            humidity: f.main.humidity,
+          };
+        else {
+          dailyMap[date].min = Math.min(dailyMap[date].min, f.main.temp_min);
+          dailyMap[date].max = Math.max(dailyMap[date].max, f.main.temp_max);
+          // average humidity
+          dailyMap[date].humidity = Math.round(
+            (dailyMap[date].humidity + f.main.humidity) / 2
+          );
+        }
+      });
+
+      const dailyArray = Object.keys(dailyMap)
+        .slice(0, 5)
+        .map((date) => ({
+          dt: Math.floor(new Date(date).getTime() / 1000),
+          temp: { min: dailyMap[date].min, max: dailyMap[date].max },
+          weather: [{ description: dailyMap[date].description }],
+          humidity: dailyMap[date].humidity,
+        }));
+
+      // Update state
+      setWeatherData({
+        approximateCity,
+        current: {
+          temp: current.main.temp,
+          description: current.weather[0].description,
+          humidity: current.main.humidity,
+          wind_speed: current.wind.speed, // m/s
+          icon: current.weather[0].icon,
+        },
+        aqi,
+        daily: dailyArray,
+      });
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch weather data."
+      );
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -68,7 +143,7 @@ const WeatherPrediction = () => {
             Localized Weather Forecast
           </h1>
           <p className="text-body-large mb-8">
-            Enter a city name to get a 7-day weather forecast, helping you plan critical farming activities like irrigation and harvesting.
+            Enter a city name to get a 5-day weather forecast, helping you plan critical farming activities like irrigation and harvesting.
           </p>
           <form onSubmit={handleFetchWeather} className="max-w-xl mx-auto flex items-center gap-4">
             <Input
@@ -107,28 +182,41 @@ const WeatherPrediction = () => {
                 {/* Current Weather Card */}
                 <Card padding="lg" className="max-w-2xl mx-auto mb-12 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left">
                   <div className="flex items-center gap-6 mb-6 sm:mb-0">
-                    {getWeatherIcon(weatherData.current.weather[0].description)}
+                    {getWeatherIcon(weatherData.current.description)}
                     <div>
                       <p className="text-5xl font-bold text-gray-800">{Math.round(weatherData.current.temp)}°C</p>
-                      <p className="text-body capitalize text-gray-600">{weatherData.current.weather[0].description}</p>
+                      <p className="text-body capitalize text-gray-600">{weatherData.current.description}</p>
                     </div>
                   </div>
                   <div className="flex gap-6 text-gray-600">
                     <div className="text-center"><FaTint className="mx-auto mb-1 text-blue-400"/> {weatherData.current.humidity}% <span className="text-xs block">Humidity</span></div>
                     <div className="text-center"><FaWind className="mx-auto mb-1 text-gray-400"/> {weatherData.current.wind_speed} m/s <span className="text-xs block">Wind</span></div>
+                    <div className="text-center">
+                      <span className="text-xs block">AQI</span>
+                      {weatherData.aqi}
+                    </div>
                   </div>
                 </Card>
 
-                {/* 7-Day Forecast */}
-                <h3 className="heading-tertiary text-center mb-6">Next 7 Days</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-                  {weatherData.daily.slice(0, 7).map((day, index) => (
+                {/* 5-Day Forecast */}
+                <h3 className="heading-tertiary text-center mb-6">Next 5 Days</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center">
+                  {weatherData.daily.slice(0, 5).map((day, index) => (
                     <Card key={index} padding="md" className="text-center">
                       <p className="font-bold text-gray-800">{formatDate(day.dt)}</p>
                       <div className="my-3 mx-auto">
                         {getWeatherIcon(day.weather[0].description)}
                       </div>
-                      <p className="font-semibold text-lg">{Math.round(day.temp.max)}° / {Math.round(day.temp.min)}°</p>
+                      <p className="text-body capitalize text-gray-600">
+                        {day.weather[0].description}
+                      </p>
+                      <p className="font-semibold text-lg">
+                        {Math.round(day.temp.max)}° / {Math.round(day.temp.min)}
+                        °
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        Humidity: {day.humidity}%
+                      </p>
                     </Card>
                   ))}
                 </div>

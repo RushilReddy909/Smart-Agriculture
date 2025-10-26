@@ -4,11 +4,12 @@ import { Link, useLocation } from "react-router-dom";
 import { TbMenuDeep, TbChevronDown } from "react-icons/tb";
 import { MdAgriculture, MdLogout } from "react-icons/md";
 import useAuthStore from "../../store/useAuthStore";
+import useLanguageStore from "../../store/useLanguageStore";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState("EN"); // Add state for current language
+  const { currentLang, setLanguage, t } = useLanguageStore();
   const location = useLocation();
   const { isAuthenticated, verifyToken, logout } = useAuthStore();
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,10 @@ const Navigation = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target)) {
+      if (
+        langDropdownRef.current &&
+        !langDropdownRef.current.contains(event.target)
+      ) {
         setIsLangOpen(false);
       }
     };
@@ -33,9 +37,9 @@ const Navigation = () => {
   const isActive = (path) => location.pathname === path;
 
   const publicLinks = [
-    { path: "/", label: "About Us" },
-    { path: "/login", label: "Login" },
-    { path: "/signup", label: "Sign Up" },
+    { path: "/", label: t("navigation.about_us") },
+    { path: "/login", label: t("navigation.login") },
+    { path: "/signup", label: t("navigation.signup") },
   ];
 
   const protectedLinks = [{ path: "/features", label: "Explore Features" }];
@@ -58,11 +62,12 @@ const Navigation = () => {
     } finally {
       setLoading(false);
     }
+  };
+
   const handleLanguageSelect = (lang) => {
-    setCurrentLang(lang);
+    setLanguage(lang);
     setIsLangOpen(false);
   };
-}
 
   return (
     <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
@@ -74,7 +79,7 @@ const Navigation = () => {
               <MdAgriculture className="w-6 h-6 text-green-600" />
             </div>
             <span className="heading-tertiary text-gray-900 group-hover:text-green-600 transition-colors">
-              Smart Agriculture
+              {t("navigation.title")}
             </span>
           </Link>
 
@@ -96,7 +101,9 @@ const Navigation = () => {
                 onClick={() => setIsLangOpen(!isLangOpen)}
                 className="flex items-center px-3 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
               >
-                <span className="font-medium text-sm text-gray-700">{currentLang}</span>
+                <span className="font-medium text-sm text-gray-700">
+                  {currentLang}
+                </span>
                 <TbChevronDown className="w-4 h-4 ml-1 text-gray-600" />
               </button>
               {isLangOpen && (
@@ -124,7 +131,7 @@ const Navigation = () => {
                 className="px-4 py-2 flex justify-center items-center rounded-lg font-medium text-gray-600 border border-gray-300 bg-white hover:text-red-600 hover:border-red-400 hover:bg-red-50 shadow-sm transition-all duration-200"
               >
                 <MdLogout className="me-2 text-lg" />
-                {loading ? "Logging out..." : "Logout"}
+                {loading ? t("navigation.logging") : t("navigation.logout")}
               </button>
             )}
           </div>

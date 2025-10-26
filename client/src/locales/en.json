@@ -1,0 +1,77 @@
+{
+  "navigation": {
+    "title": "Smart Agriculture",
+    "about_us": "About Us",
+    "login": "Login",
+    "signup": "Sign Up",
+    "explore_features": "Explore Features",
+    "logout": "Logout",
+    "logging": "Logging Out"
+  },
+  "hero": {
+    "heading": {
+      "p1": "Welcome to",
+      "p2": "Smart Agriculture"
+    },
+    "subtitle": "Empowering farmers with smart solutions — crop suggestions, pest control, weather predictions, and more. Available in multiple languages to serve farming communities worldwide.",
+    "feature": {
+      "management": "🌱 Smart Crop Management",
+      "weather": "🌤️ Weather Predictions",
+      "pest": "🔬 Pest Control Solutions",
+      "analytics": "📊 Data Analytics"
+    },
+    "buttons": {
+      "start": "Get Started Free",
+      "login": "Sign In"
+    }
+  },
+  "platform": {
+    "stats": {
+      "1": {
+        "label": "Crop Types",
+        "description": "Supported varieties"
+      },
+      "2": {
+        "label": "Monitoring",
+        "description": "Real-time tracking"
+      },
+      "3": {
+        "label": "Powered",
+        "description": "Smart insights"
+      }
+    },
+    "title": "Platform Ready for Modern Farming",
+    "features": {
+      "1": "Cloud-based platform",
+      "2": "Mobile responsive",
+      "3": "Multi-language support"
+    }
+  },
+  "home": {
+    "title": "Revolutionizing Agriculture",
+    "subtitle": "Discover how our smart solutions are transforming farming practices and helping farmers achieve better results with less effort.",
+    "additional": {
+      "title": "Ready to Transform Your Farm?",
+      "subtitle": "Join thousands of farmers who are already using our platform to increase their productivity and profitability."
+    },
+    "features": {
+      "1": "Free to start",
+      "2": "No setup fees",
+      "3": "24/7 support"
+    },
+    "card": {
+      "1": {
+        "title": "Smart Crop Management",
+        "description": "Monitor your crops with AI-powered insights and get personalized recommendations for optimal growth."
+      },
+      "2": {
+        "title": "Precision Farming",
+        "description": "Utilize advanced analytics and IoT sensors to optimize resource usage and maximize yield."
+      },
+      "3": {
+        "title": "Sustainable Practices",
+        "description": "Implement eco-friendly farming techniques that protect the environment while boosting productivity."
+      }
+    }
+  }
+}

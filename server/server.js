@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/connectDB.js";
 
 import authRoutes from "./routes/authRoutes.js";
+import weatherRoutes from "./routes/weatherRoutes.js"
 // import { connectRedis } from "./middlewares/redisCache.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/weather", weatherRoutes);
 
 app.listen(PORT, async () => {
   await connectDB();

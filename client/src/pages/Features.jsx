@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Container from '../components/layout/Container';
 import Card from '../components/ui/Card';
 import { TbPlant2, TbSun, TbBrain } from 'react-icons/tb';
+import { RiLineChartFill } from 'react-icons/ri';
+import { MdAgriculture } from 'react-icons/md';
 import { FaCloudSun } from 'react-icons/fa'; // Import a weather icon
 
 const featuresList = [
@@ -13,6 +15,48 @@ const featuresList = [
     path: '/crop-suggestion',
     color: 'text-green-600',
     bgColor: 'bg-green-100',
+  },
+  {
+    title: (
+      <>
+        Market Price
+        <br />
+        Predictor
+      </>
+    ),
+    description: 'AI-powered price forecasts from trends and demand to time your sale.',
+    icon: <RiLineChartFill size={32} />,
+    path: '/market-price',
+    color: 'text-emerald-700',
+    bgColor: 'bg-emerald-100',
+  },
+  {
+    title: (
+      <>
+        Pest & Disease
+        <br />
+        Diagnosis
+      </>
+    ),
+    description: 'Identify pests/diseases from images using crop.health API.',
+    icon: <TbBrain size={32} />,
+    path: '/pest-diagnosis',
+    color: 'text-rose-600',
+    bgColor: 'bg-rose-100',
+  },
+  {
+    title: (
+      <>
+        Natural
+        <br />
+        Pesticides
+      </>
+    ),
+    description: 'Learn organic remedies like vermicompost, neem spray, and more.',
+    icon: <MdAgriculture size={32} />,
+    path: '/natural-pesticides',
+    color: 'text-emerald-600',
+    bgColor: 'bg-emerald-100',
   },
   {
     title: (

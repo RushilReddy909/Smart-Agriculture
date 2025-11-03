@@ -120,6 +120,18 @@ const Navigation = () => {
                   >
                     हिंदी (Hindi)
                   </button>
+                  <button
+                    onClick={() => handleLanguageSelect("TEL")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    తెలుగు (Telugu)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("CHA")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    छत्तीसगढ़ी (Chhattisgarhi)
+                  </button>
                 </div>
               )}
             </div>

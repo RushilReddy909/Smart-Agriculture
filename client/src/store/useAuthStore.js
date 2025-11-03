@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { api } from "../utils/axiosInstances";
+import useChatStore from "./useChatStore";
 
 const useAuthStore = create((set) => ({
   isAuthenticated: null, // null = unknown, true/false after verification
@@ -35,6 +36,8 @@ const useAuthStore = create((set) => ({
       console.error("Logout request failed", e);
     }
     localStorage.removeItem("token");
+    // Clear chat history on logout
+    useChatStore.getState().clearHistory();
     set({ isAuthenticated: false });
   },
 }));

@@ -8,6 +8,13 @@ import authRoutes from "./routes/authRoutes.js";
 import weatherRoutes from "./routes/weatherRoutes.js";
 import pestRoutes from "./routes/pestRoutes.js";
 import priceRoutes from "./routes/priceRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -28,6 +35,16 @@ app.use("/api/auth", authRoutes);
 app.use("/api/weather", weatherRoutes);
 app.use("/api/pest", pestRoutes);
 app.use("/api/price", priceRoutes);
+app.use("/api/chat", chatRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  const buildPath = path.join(__dirname, "..", "client", "dist");
+  app.use(express.static(buildPath));
+  
+  app.get("/{*any}", (req, res) => {
+    res.sendFile(buildPath, "index.html");
+  });
+}
 
 app.listen(PORT, async () => {
   await connectDB();

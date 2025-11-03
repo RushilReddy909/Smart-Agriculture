@@ -174,5 +174,12 @@
       "learn_more": "Learn more"
     },
     "disclaimer": "Powered by Kindwise crop.health. Always validate results with local agronomy guidance."
+  },
+  "chat": {
+    "title": "Agri Assistant",
+    "placeholder": "Ask about farming...",
+    "welcome": "Hello! I'm your AI farming assistant.",
+    "help": "How can I help you today?",
+    "error": "Sorry, I encountered an error. Please try again."
   }
 }

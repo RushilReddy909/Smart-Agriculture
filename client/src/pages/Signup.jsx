@@ -78,6 +78,7 @@ function Signup() {
                 name="username"
                 label="Full Name"
                 placeholder="Enter your full name"
+                autoComplete="username"
                 error={errors.username?.message}
                 {...register("username")}
               />
@@ -87,6 +88,7 @@ function Signup() {
                 name="email"
                 label="Email Address"
                 placeholder="Enter your email"
+                autoComplete="email"
                 error={errors.email?.message}
                 {...register("email")}
               />

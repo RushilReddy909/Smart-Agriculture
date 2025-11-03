@@ -38,6 +38,7 @@ const Navigation = () => {
 
   const publicLinks = [
     { path: "/", label: t("navigation.about_us") },
+    { path: "/natural-pesticides", label: t("navigation.education") },
     { path: "/login", label: t("navigation.login") },
     { path: "/signup", label: t("navigation.signup") },
   ];

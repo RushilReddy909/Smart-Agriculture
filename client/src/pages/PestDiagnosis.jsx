@@ -122,9 +122,9 @@ const PestDiagnosis = () => {
         <div className="py-8 md:py-12 space-y-8">
           <header className="space-y-2 text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-              {t("pest.title")}
+              {t("PestDiagnosisPage.pest.title")}
             </h1>
-            <p className="text-gray-600 max-w-3xl">{t("pest.subtitle")}</p>
+            <p className="text-gray-600 max-w-3xl">{t("PestDiagnosisPage.pest.subtitle")}</p>
           </header>
 
           <Card className="p-6">
@@ -134,7 +134,7 @@ const PestDiagnosis = () => {
             >
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("pest.form.image")}
+                  {t("PestDiagnosisPage.pest.form.image")}
                 </label>
                 <input
                   type="file"
@@ -149,11 +149,11 @@ const PestDiagnosis = () => {
                   type="submit"
                   className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
                 >
-                  {loading ? t("pest.form.submitting") : t("pest.form.submit")}
+                  {loading ? t("PestDiagnosisPage.pest.form.submitting") : t("PestDiagnosisPage.pest.form.submit")}
                 </button>
                 {apiKeyMissing && (
                   <span className="text-xs text-amber-700 bg-amber-100 rounded px-2 py-1 self-center">
-                    {t("pest.form.api_warning")}
+                    {t("PestDiagnosisPage.pest.form.api_warning")}
                   </span>
                 )}
               </div>
@@ -171,8 +171,8 @@ const PestDiagnosis = () => {
                 <Card key={idx} className="p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-lg font-semibold text-gray-900">
-                        {r.common_name || r.name || t("pest.cards.unknown")}
+                  <div className="text-lg font-semibold text-gray-900">
+                    {r.common_name || r.name || t("PestDiagnosisPage.pest.cards.unknown")}
                       </div>
                       <div className="text-sm text-gray-500">
                         {r.scientific_name || r.cause || ""}
@@ -192,11 +192,11 @@ const PestDiagnosis = () => {
                   <div className="mt-3 text-sm text-gray-700 leading-6">
                     {r.details?.description ||
                       r.description ||
-                      t("pest.cards.no_description")}
+                      t("PestDiagnosisPage.pest.cards.no_description")}
                   </div>
                   <div className="mt-4">
                     <div className="text-sm font-medium text-gray-800 mb-1">
-                      {t("pest.cards.treatment")}
+                      {t("PestDiagnosisPage.pest.cards.treatment")}
                     </div>
                     <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
                       {(r.details?.treatment || r.treatment || [])
@@ -215,7 +215,7 @@ const PestDiagnosis = () => {
                       rel="noopener noreferrer"
                       className="inline-block mt-3 text-green-700 hover:text-green-800 text-sm"
                     >
-                      {t("pest.cards.learn_more")}
+                      {t("PestDiagnosisPage.pest.cards.learn_more")}
                     </a>
                   )}
                 </Card>

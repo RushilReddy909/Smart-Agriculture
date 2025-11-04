@@ -1,89 +1,81 @@
 /**
- * Determines the current Indian agricultural season based on the month.
- * - Kharif (Monsoon): June - October
- * - Rabi (Winter): November - March
- * - Zaid (Summer): April - May
- * @returns {string} The name of the current season ('Kharif', 'Rabi', or 'Zaid').
+ * Determines the current Indian agricultural season and returns a non-translatable key.
+ * - 'kharif': June - October
+ * - 'rabi': November - March
+ * - 'zaid': April - May
+ * @returns {string} The key for the current season ('kharif', 'rabi', or 'zaid').
  */
 export const getCurrentSeason = () => {
   const month = new Date().getMonth(); // 0 (Jan) to 11 (Dec)
 
   if (month >= 5 && month <= 9) { // June to October
-    return 'Kharif (Monsoon)';
+    return 'kharif';
   } else if (month >= 10 || month <= 2) { // November to March
-    return 'Rabi (Winter)';
+    return 'rabi';
   } else { // April to May
-    return 'Zaid (Summer)';
+    return 'zaid';
   }
 };
 
+// This list now uses keys to point to the JSON file for translations.
 export const crops = [
   // Kharif (Monsoon) Crops
   {
-    name: 'Rice (Paddy)',
-    season: 'Kharif (Monsoon)',
-    type: 'Cereal',
-    difficulty: 'Medium',
-    description: 'A staple food crop that requires significant water, making it ideal for the monsoon season.'
+    id: 'rice_paddy',
+    season: 'kharif',
+    typeKey: 'shared_terms.cereal',
+    difficultyKey: 'shared_terms.medium',
   },
   {
-    name: 'Cotton',
-    season: 'Kharif (Monsoon)',
-    type: 'Fiber Crop',
-    difficulty: 'Hard',
-    description: 'A cash crop that grows well in the warm and humid conditions of the Kharif season.'
+    id: 'cotton',
+    season: 'kharif',
+    typeKey: 'shared_terms.fiber_crop',
+    difficultyKey: 'shared_terms.hard',
   },
   {
-    name: 'Sugarcane',
-    season: 'Kharif (Monsoon)',
-    type: 'Cash Crop',
-    difficulty: 'Medium',
-    description: 'A long-duration crop that is typically planted during the monsoon season.'
+    id: 'sugarcane',
+    season: 'kharif',
+    typeKey: 'shared_terms.cash_crop',
+    difficultyKey: 'shared_terms.medium',
   },
   {
-    name: 'Maize (Corn)',
-    season: 'Kharif (Monsoon)',
-    type: 'Cereal',
-    difficulty: 'Easy',
-    description: 'A versatile crop used for food and animal feed, thriving in monsoon climates.'
+    id: 'maize',
+    season: 'kharif',
+    typeKey: 'shared_terms.cereal',
+    difficultyKey: 'shared_terms.easy',
   },
 
   // Rabi (Winter) Crops
   {
-    name: 'Wheat',
-    season: 'Rabi (Winter)',
-    type: 'Cereal',
-    difficulty: 'Medium',
-    description: 'The primary winter crop in India, requiring cool weather for growth and warm weather for ripening.'
+    id: 'wheat',
+    season: 'rabi',
+    typeKey: 'shared_terms.cereal',
+    difficultyKey: 'shared_terms.medium',
   },
   {
-    name: 'Mustard',
-    season: 'Rabi (Winter)',
-    type: 'Oilseed',
-    difficulty: 'Easy',
-    description: 'An important oilseed crop that grows well in the cool temperatures of the Rabi season.'
+    id: 'mustard',
+    season: 'rabi',
+    typeKey: 'shared_terms.oilseed',
+    difficultyKey: 'shared_terms.easy',
   },
   {
-    name: 'Gram (Chickpea)',
-    season: 'Rabi (Winter)',
-    type: 'Pulse',
-    difficulty: 'Easy',
-    description: 'A major pulse crop that prefers the dry and cool conditions of the winter months.'
+    id: 'gram',
+    season: 'rabi',
+    typeKey: 'shared_terms.pulse',
+    difficultyKey: 'shared_terms.easy',
   },
 
   // Zaid (Summer) Crops
   {
-    name: 'Watermelon',
-    season: 'Zaid (Summer)',
-    type: 'Fruit',
-    difficulty: 'Easy',
-    description: 'A popular summer fruit that requires warm weather and plenty of sunlight to grow.'
+    id: 'watermelon',
+    season: 'zaid',
+    typeKey: 'shared_terms.fruit',
+    difficultyKey: 'shared_terms.easy',
   },
   {
-    name: 'Cucumber',
-    season: 'Zaid (Summer)',
-    type: 'Vegetable',
-    difficulty: 'Easy',
-    description: 'A fast-growing vegetable that thrives in the heat of the Zaid season.'
+    id: 'cucumber',
+    season: 'zaid',
+    typeKey: 'shared_terms.vegetable',
+    difficultyKey: 'shared_terms.easy',
   },
 ];

@@ -7,25 +7,25 @@ const PlatformStats = () => {
   const stats = [
     {
       number: "100+",
-      label: t("platform.stats.1.label"),
-      description: t("platform.stats.1.description"),
+      label: t("HomePage.platform.stats.1.label"),
+      description: t("HomePage.platform.stats.1.description"),
     },
     {
       number: "24/7",
-      label: t("platform.stats.2.label"),
-      description: t("platform.stats.2.description"),
+      label: t("HomePage.platform.stats.2.label"),
+      description: t("HomePage.platform.stats.2.description"),
     },
     {
       number: "AI",
-      label: t("platform.stats.3.label"),
-      description: t("platform.stats.3.description"),
+      label: t("HomePage.platform.stats.3.label"),
+      description: t("HomePage.platform.stats.3.description"),
     },
   ];
 
   return (
     <div className="mt-12 pt-8 border-t border-gray-200">
       <p className="text-sm text-gray-500 mb-4">
-        {t("platform.title")}
+        {t("HomePage.platform.title")}
       </p>
       <div className="flex justify-center items-center space-x-8 opacity-60">
         {stats.map((stat, index) => (
@@ -55,15 +55,15 @@ const PlatformStats = () => {
         <div className="flex items-center space-x-6 text-xs text-gray-500">
           <div className="flex items-center">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            {t("platform.features.1")}
+            {t("HomePage.platform.features.1")}
           </div>
           <div className="flex items-center">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            {t("platform.features.2")}
+            {t("HomePage.platform.features.2")}
           </div>
           <div className="flex items-center">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            {t("platform.features.3")}
+            {t("HomePage.platform.features.3")}
           </div>
         </div>
       </div>

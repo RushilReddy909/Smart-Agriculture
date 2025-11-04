@@ -11,22 +11,22 @@ const FeatureSection = () => {
   const features = [
     {
       icon: <TbLeaf className="w-8 h-8" />,
-      title: t("home.card.1.title"),
-      description: t("home.card.1.description"),
+      title: t("HomePage.home.card.1.title"),
+      description: t("HomePage.home.card.1.description"),
       color: "text-green-600",
       bgColor: "bg-green-100",
     },
     {
       icon: <MdAgriculture className="w-8 h-8" />,
-      title: t("home.card.2.title"),
-      description: t("home.card.2.description"),
+      title: t("HomePage.home.card.2.title"),
+      description: t("HomePage.home.card.2.description"),
       color: "text-blue-600",
       bgColor: "bg-blue-100",
     },
     {
       icon: <TbTree className="w-8 h-8" />,
-      title: t("home.card.3.title"),
-      description: t("home.card.3.description"),
+      title: t("HomePage.home.card.3.title"),
+      description: t("HomePage.home.card.3.description"),
       bgColor: "bg-emerald-100",
     },
   ];
@@ -36,10 +36,10 @@ const FeatureSection = () => {
       <Container>
         <div className="text-center mb-16">
           <h2 className="heading-secondary text-gray-900 mb-4">
-            {t("home.title")}
+            {t("HomePage.home.title")}
           </h2>
           <p className="text-body-large max-w-2xl mx-auto">
-            {t("home.subtitle")}
+            {t("HomePage.home.subtitle")}
           </p>
         </div>
 
@@ -72,24 +72,24 @@ const FeatureSection = () => {
         <div className="mt-20 text-center">
           <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
             <h3 className="heading-tertiary text-gray-900 mb-4">
-              {t("home.additional.title")}
+              {t("HomePage.home.additional.title")}
             </h3>
             <p className="text-body text-gray-600 mb-6 max-w-2xl mx-auto">
-              {t("home.additional.subtitle")}
+              {t("HomePage.home.additional.subtitle")}
             </p>
             <div className="flex justify-center">
               <div className="flex items-center space-x-6 text-sm text-gray-500">
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  {t("home.features.1")}
+                  {t("HomePage.home.features.1")}
                 </div>
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  {t("home.features.2")}
+                  {t("HomePage.home.features.2")}
                 </div>
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  {t("home.features.3")}
+                  {t("HomePage.home.features.3")}
                 </div>
               </div>
             </div>

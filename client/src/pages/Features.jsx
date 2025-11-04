@@ -5,82 +5,52 @@ import Card from '../components/ui/Card';
 import { TbPlant2, TbSun, TbBrain } from 'react-icons/tb';
 import { RiLineChartFill } from 'react-icons/ri';
 import { MdAgriculture } from 'react-icons/md';
-import { FaCloudSun } from 'react-icons/fa'; // Import a weather icon
+import { FaCloudSun } from 'react-icons/fa';
+import useLanguageStore from '../store/useLanguageStore';
 
+// ---------------------------------------------------------------------------
+// CHANGE 1:
+// This list now only contains static data and a "jsonKey"
+// to look up the text. The hard-coded English text is removed.
+// ---------------------------------------------------------------------------
 const featuresList = [
   {
-    title: 'Seasonal Crop Suggestions',
-    description: 'Get general crop recommendations based on the current agricultural season.',
+    jsonKey: '1', // Matches '1' in your JSON items
     icon: <TbPlant2 size={32} />,
     path: '/crop-suggestion',
     color: 'text-green-600',
     bgColor: 'bg-green-100',
   },
   {
-    title: (
-      <>
-        Market Price
-        <br />
-        Predictor
-      </>
-    ),
-    description: 'AI-powered price forecasts from trends and demand to time your sale.',
+    jsonKey: '2', // Matches '2' in your JSON items
     icon: <RiLineChartFill size={32} />,
     path: '/market-price',
     color: 'text-emerald-700',
     bgColor: 'bg-emerald-100',
   },
   {
-    title: (
-      <>
-        Pest & Disease
-        <br />
-        Diagnosis
-      </>
-    ),
-    description: 'Identify pests/diseases from images using crop.health API.',
+    jsonKey: '3', // Matches '3' in your JSON items
     icon: <TbBrain size={32} />,
     path: '/pest-diagnosis',
     color: 'text-rose-600',
     bgColor: 'bg-rose-100',
   },
   {
-    title: (
-      <>
-        Natural
-        <br />
-        Pesticides
-      </>
-    ),
-    description: 'Learn organic remedies like vermicompost, neem spray, and more.',
+    jsonKey: '4', // Matches '4' in your JSON items
     icon: <MdAgriculture size={32} />,
     path: '/natural-pesticides',
     color: 'text-emerald-600',
     bgColor: 'bg-emerald-100',
   },
   {
-    title: (
-      <>
-        AI Crop
-        <br />
-        Prediction
-      </>
-    ),
-    description: "Provide your farm's data to our AI model to get a hyper-personalized crop prediction.",
+    jsonKey: '5', // Matches '5' in yourJSON items
     icon: <TbBrain size={32} />,
     path: '/crop-prediction',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
   },
   {
-    title: (
-      <>
-        Weather
-        <br />
-        Prediction
-      </>
-    ),
-    description: 'Get a 7-day weather forecast for your location to help you plan farming activities.',
+    jsonKey: '6', // Matches '6' in your JSON items
     icon: <FaCloudSun size={32} />,
     path: '/weather-prediction',
     color: 'text-purple-600',
@@ -90,6 +60,7 @@ const featuresList = [
 ];
 
 const Features = () => {
+  const { t } = useLanguageStore();
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <Container>
@@ -98,32 +69,46 @@ const Features = () => {
             <TbSun size={40} />
           </div>
           <h1 className="heading-secondary text-gray-900 mb-2">
-            Explore Our Smart Tools
+            {t('FeaturesPage.features.title')}
           </h1>
           <p className="text-body-large">
-            Discover all the features designed to help you farm smarter.
+            {t('FeaturesPage.features.subtitle')}
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
           {featuresList.map((feature, index) => (
-            <Link 
-              to={feature.disabled ? '#' : feature.path} 
+            <Link
+              to={feature.disabled ? '#' : feature.path}
               key={index}
               className={feature.disabled ? 'pointer-events-none' : ''}
             >
               <Card
                 hover={!feature.disabled}
-                className={`flex flex-col text-center h-full animate-fade-in ${feature.disabled ? 'opacity-50' : ''}`}
+                className={`flex flex-col text-center h-full animate-fade-in ${
+                  feature.disabled ? 'opacity-50' : ''
+                }`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`inline-flex items-center justify-center w-20 h-20 ${feature.bgColor} rounded-2xl mb-6 mx-auto`}>
+                <div
+                  className={`inline-flex items-center justify-center w-20 h-20 ${feature.bgColor} rounded-2xl mb-6 mx-auto`}
+                >
                   <div className={feature.color}>{feature.icon}</div>
                 </div>
+                
+                {/* ---------------------------------------------------- */}
+                {/* CHANGE 2: Use the t() function to get the title      */}
+                {/* ---------------------------------------------------- */}
                 <h3 className="heading-tertiary text-gray-900 mb-4 flex-grow">
-                  {feature.title}
+                  {t(`FeaturesPage.features.items.${feature.jsonKey}.title`)}
                 </h3>
+
+                {/* ---------------------------------------------------- */}
+                {/* CHANGE 3: Use the t() function to get the description */}
+                {/* ---------------------------------------------------- */}
                 <p className="text-body text-gray-600">
-                  {feature.description}
+                  {t(
+                    `FeaturesPage.features.items.${feature.jsonKey}.description`
+                  )}
                 </p>
               </Card>
             </Link>
@@ -135,4 +120,3 @@ const Features = () => {
 };
 
 export default Features;
-

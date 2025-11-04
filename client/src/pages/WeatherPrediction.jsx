@@ -14,6 +14,7 @@ import {
   FaCloudSun,
 } from "react-icons/fa";
 import { TbMapPinSearch } from "react-icons/tb";
+import useLanguageStore from "../store/useLanguageStore";
 
 // --- Helper Functions ---
 const getWeatherIcon = (description) => {
@@ -41,6 +42,7 @@ const WeatherPrediction = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showForecast, setShowForecast] = useState(false);
+  const { t } = useLanguageStore();
 
   const handleFetchWeather = async (e) => {
     e.preventDefault();
@@ -78,10 +80,10 @@ const WeatherPrediction = () => {
             <FaCloudSun size={40} />
           </div>
           <h1 className="heading-secondary text-gray-900 mb-4">
-            Localized Weather Forecast
+            {t("WeatherPredictionPage.weather.title")}
           </h1>
           <p className="text-body-large mb-8">
-            Enter a city name to get a 5-day weather forecast.
+            {t("WeatherPredictionPage.weather.subtitle")}
           </p>
           <form
             onSubmit={handleFetchWeather}
@@ -91,16 +93,16 @@ const WeatherPrediction = () => {
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="Enter city name"
+              placeholder={t("WeatherPredictionPage.weather.form.city_placeholder")}
               className="flex-grow"
             />
             <Button type="submit" size="input" disabled={isLoading || !city}>
               {isLoading ? (
-                "Fetching..."
+                t("WeatherPredictionPage.weather.form.submitting")
               ) : (
                 <>
                   <TbMapPinSearch className="mr-2" />
-                  Get Forecast
+                  {t("WeatherPredictionPage.weather.form.submit")}
                 </>
               )}
             </Button>
@@ -132,13 +134,13 @@ const WeatherPrediction = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <p>Fetching the latest weather data...</p>
+                <p>{t("WeatherPredictionPage.weather.forecast.loading")}</p>
               </div>
             )}
 
             {error && (
               <p className="text-center text-red-600 bg-red-100 p-4 rounded-lg max-w-2xl mx-auto">
-                {error}
+                {t("WeatherPredictionPage.weather.error")}
               </p>
             )}
 
@@ -147,7 +149,7 @@ const WeatherPrediction = () => {
                 {/* Current Weather */}
                 <div className="text-center mb-12">
                   <h2 className="heading-tertiary text-gray-800">
-                    Weather in{" "}
+                    {t("WeatherPredictionPage.weather.forecast.current_title")} {" "}
                     <span className="capitalize text-blue-600">{city}</span>
                   </h2>
                 </div>
@@ -170,19 +172,19 @@ const WeatherPrediction = () => {
                     <div className="text-center">
                       <FaTint className="mx-auto mb-1 text-blue-400" />{" "}
                       {weatherData.current.humidity}%{" "}
-                      <span className="text-xs block">Humidity</span>
+                      <span className="text-xs block">{t("WeatherPredictionPage.weather.forecast.humidity")}</span>
                     </div>
                     <div className="text-center">
                       <FaWind className="mx-auto mb-1 text-gray-400" />{" "}
                       {weatherData.current.wind_speed} m/s{" "}
-                      <span className="text-xs block">Wind</span>
+                      <span className="text-xs block">{t("WeatherPredictionPage.weather.forecast.wind")}</span>
                     </div>
                   </div>
                 </Card>
 
                 {/* 5-Day Forecast */}
                 <h3 className="heading-tertiary text-center mb-6">
-                  Next 5 Days
+                  {t("WeatherPredictionPage.weather.forecast.forecast_title")}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 justify-items-center">
                   {weatherData.forecast.slice(0, 5).map((day, index) => (

@@ -9,6 +9,7 @@ import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { TbPlant, TbReportAnalytics } from "react-icons/tb";
+import useLanguageStore from "../store/useLanguageStore";
 
 // Validation Schema for the form inputs
 const validationSchema = Yup.object().shape({
@@ -51,6 +52,7 @@ const AICropSuggestion = () => {
   const [prediction, setPrediction] = useState("");
   const [apiError, setApiError] = useState("");
   const [imageURL, setImageURL] = useState("");
+  const { t } = useLanguageStore();
 
   useEffect(() => {
     if (!prediction) return;
@@ -142,11 +144,10 @@ const AICropSuggestion = () => {
             <TbReportAnalytics size={40} />
           </div>
           <h1 className="heading-secondary text-gray-900 mb-4">
-            AI-Powered Crop Recommendation
+            {t("CropPredictionPage.crop_ai.title")}
           </h1>
           <p className="text-body-large">
-            Enter your farm's soil and location data to get a hyper-personalized
-            crop suggestion from our AI model.
+            {t("CropPredictionPage.crop_ai.subtitle")}
           </p>
         </div>
 
@@ -155,7 +156,7 @@ const AICropSuggestion = () => {
           {/* Input Form */}
           <Card className="animate-fade-in">
             <h3 className="heading-tertiary text-gray-800 mb-6">
-              Enter Your Farm's Data
+              {t("CropPredictionPage.crop_ai.form.title")}
             </h3>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid md:grid-cols-3 gap-4">
@@ -165,7 +166,7 @@ const AICropSuggestion = () => {
                   error={errors.nitrogen?.message}
                   type="number"
                   step="any"
-                  placeholder="e.g., 83"
+                  placeholder={t("CropPredictionPage.crop_ai.form.nitrogen_placeholder")}
                 />
                 <Input
                   label="Phosphorous"
@@ -173,7 +174,7 @@ const AICropSuggestion = () => {
                   error={errors.phosphorous?.message}
                   type="number"
                   step="any"
-                  placeholder="e.g., 45"
+                  placeholder={t("CropPredictionPage.crop_ai.form.phosphorous_placeholder")}
                 />
                 <Input
                   label="Potassium"
@@ -181,16 +182,16 @@ const AICropSuggestion = () => {
                   error={errors.potassium?.message}
                   type="number"
                   step="any"
-                  placeholder="e.g., 35"
+                  placeholder={t("CropPredictionPage.crop_ai.form.potassium_placeholder")}
                 />
               </div>
               <Input
-                label="Soil pH"
+                label={"Soil pH"}
                 {...register("ph")}
                 error={errors.ph?.message}
                 type="number"
                 step="0.1"
-                placeholder="e.g., 6.7"
+                placeholder={t("CropPredictionPage.crop_ai.form.ph_placeholder")}
               />
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -199,14 +200,14 @@ const AICropSuggestion = () => {
                   {...register("state")}
                   error={errors.state?.message}
                   type="text"
-                  placeholder="e.g., Maharashtra"
+                  placeholder={t("CropPredictionPage.crop_ai.form.state_placeholder")}
                 />
                 <Input
                   label="District"
                   {...register("district")}
                   error={errors.district?.message}
                   type="text"
-                  placeholder="e.g., Pune"
+                  placeholder={t("CropPredictionPage.crop_ai.form.district_placeholder")}
                 />
               </div>
 
@@ -228,7 +229,7 @@ const AICropSuggestion = () => {
                 className="w-full !mt-8"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Analyzing..." : "Get AI Recommendation"}
+                {isSubmitting ? t("CropPredictionPage.crop_ai.form.submitting") : t("CropPredictionPage.crop_ai.form.submit")}
               </Button>
             </form>
           </Card>
@@ -264,12 +265,12 @@ const AICropSuggestion = () => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  <p>Our AI is analyzing your data...</p>
+                  <p>{t("CropPredictionPage.crop_ai.results.loading")}</p>
                 </div>
               ) : prediction ? (
                 <div>
                   <p className="text-body text-gray-600 mb-2">
-                    Our AI recommends you plant:
+                    {t("CropPredictionPage.crop_ai.results.recommendation")}
                   </p>
                   <div className="flex items-center justify-center gap-4">
                     <div className="bg-green-100 text-green-700 p-3 rounded-full">
@@ -291,13 +292,13 @@ const AICropSuggestion = () => {
                 </div>
               ) : apiError ? (
                 <div className="text-red-600">
-                  <h3 className="font-semibold mb-2">An Error Occurred</h3>
+                  <h3 className="font-semibold mb-2">{t("CropPredictionPage.crop_ai.results.error_title")}</h3>
                   <p className="text-sm">{apiError}</p>
                 </div>
               ) : (
                 <div className="text-center text-gray-500">
                   <TbReportAnalytics size={40} className="mx-auto mb-3" />
-                  <p>Your personalized crop recommendation will appear here.</p>
+                  <p>{t("CropPredictionPage.crop_ai.results.empty")}</p>
                 </div>
               )}
             </Card>

@@ -37,13 +37,13 @@ const Navigation = () => {
   const isActive = (path) => location.pathname === path;
 
   const publicLinks = [
-    { path: "/", label: t("navigation.about_us") },
-    { path: "/natural-pesticides", label: t("navigation.education") },
-    { path: "/login", label: t("navigation.login") },
-    { path: "/signup", label: t("navigation.signup") },
+    { path: "/", label: t("HomePage.navigation.about_us") },
+    { path: "/natural-pesticides", label: t("HomePage.navigation.education") },
+    { path: "/login", label: t("HomePage.navigation.login") },
+    { path: "/signup", label: t("HomePage.navigation.signup") },
   ];
 
-  const protectedLinks = [{ path: "/features", label: "Explore Features" }];
+  const protectedLinks = [{ path: "/features", label: t("HomePage.navigation.explore_features") }];
 
   const navLinks = isAuthenticated ? protectedLinks : publicLinks;
 
@@ -80,7 +80,7 @@ const Navigation = () => {
               <MdAgriculture className="w-6 h-6 text-green-600" />
             </div>
             <span className="heading-tertiary text-gray-900 group-hover:text-green-600 transition-colors">
-              {t("navigation.title")}
+              {t("HomePage.navigation.title")}
             </span>
           </Link>
 
@@ -144,7 +144,7 @@ const Navigation = () => {
                 className="px-4 py-2 flex justify-center items-center rounded-lg font-medium text-gray-600 border border-gray-300 bg-white hover:text-red-600 hover:border-red-400 hover:bg-red-50 shadow-sm transition-all duration-200"
               >
                 <MdLogout className="me-2 text-lg" />
-                {loading ? t("navigation.logging") : t("navigation.logout")}
+                {loading ? t("HomePage.navigation.logging") : t("HomePage.navigation.logout")}
               </button>
             )}
           </div>

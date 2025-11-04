@@ -10,6 +10,7 @@ import Button from "../components/ui/Button";
 import Container from "../components/layout/Container";
 import { TbUserSquareRounded } from "react-icons/tb";
 import { api } from "../utils/axiosInstances";
+import useLanguageStore from "../store/useLanguageStore";
 
 // 1. Define the validation schema with Yup
 const validationSchema = Yup.object().shape({
@@ -40,6 +41,7 @@ function Signup() {
   });
 
   const navigate = useNavigate();
+  const { t } = useLanguageStore();
 
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
@@ -63,10 +65,10 @@ function Signup() {
                 <TbUserSquareRounded className="w-8 h-8 text-green-600" />
               </div>
               <h2 className="heading-secondary text-gray-900 mb-2">
-                Create Account
+                {t("SignupPage.signup.title")}
               </h2>
               <p className="text-body text-gray-600">
-                Join Smart Agriculture and start your farming journey
+                {t("SignupPage.signup.subtitle")}
               </p>
             </div>
 
@@ -76,8 +78,8 @@ function Signup() {
               <Input
                 type="text"
                 name="username"
-                label="Full Name"
-                placeholder="Enter your full name"
+                label={t("SignupPage.signup.form.full_name_label")}
+                placeholder={t("SignupPage.signup.form.full_name_placeholder")}
                 error={errors.username?.message}
                 {...register("username")}
               />
@@ -85,8 +87,8 @@ function Signup() {
               <Input
                 type="email"
                 name="email"
-                label="Email Address"
-                placeholder="Enter your email"
+                label={t("SignupPage.signup.form.email_label")}
+                placeholder={t("SignupPage.signup.form.email_placeholder")}
                 error={errors.email?.message}
                 {...register("email")}
               />
@@ -94,8 +96,8 @@ function Signup() {
               <Input
                 type="password"
                 name="password"
-                label="Password"
-                placeholder="Create a password"
+                label={t("SignupPage.signup.form.password_label")}
+                placeholder={t("SignupPage.signup.form.password_placeholder")}
                 error={errors.password?.message}
                 {...register("password")}
               />
@@ -103,8 +105,8 @@ function Signup() {
               <Input
                 type="password"
                 name="cnfpass"
-                label="Confirm Password"
-                placeholder="Confirm your password"
+                label={t("SignupPage.signup.form.confirm_password_label")}
+                placeholder={t("SignupPage.signup.form.confirm_password_placeholder")}
                 error={errors.cnfpass?.message}
                 {...register("cnfpass")}
               />
@@ -117,12 +119,12 @@ function Signup() {
                   className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 mt-1"
                 />
                 <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
-                  I agree to the{" "}
+                  {t("SignupPage.signup.form.terms")} {" "}
                   <Link
                     to="/terms"
                     className="text-green-600 hover:text-green-700 font-medium"
                   >
-                    Terms of Service
+                    {t("SignupPage.signup.form.terms_link")}
                   </Link>
                 </label>
               </div>
@@ -131,18 +133,18 @@ function Signup() {
               )}
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Creating Account..." : "Create Account"}
+                {isSubmitting ? t("SignupPage.signup.form.submitting") : t("SignupPage.signup.form.submit")}
               </Button>
             </form>
 
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{" "}
+                {t("SignupPage.signup.footer.has_account")} {" "}
                 <Link
                   to="/login"
                   className="font-medium text-green-600 hover:text-green-700"
                 >
-                  Sign in
+                  {t("SignupPage.signup.footer.login_link")}
                 </Link>
               </p>
             </div>

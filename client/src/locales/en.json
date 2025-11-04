@@ -151,12 +151,16 @@
     }
   },
   "pest": {
+    "badge": "AI-Powered Detection",
     "title": "Pest & Disease Diagnosis",
     "subtitle": "Upload a crop photo to identify likely pests or diseases and see treatment suggestions.",
     "form": {
       "image": "Crop image",
       "crop": "Crop",
       "crop_placeholder": "Select crop",
+      "choose_file": "Choose File",
+      "change_file": "Change File",
+      "no_file_selected": "No file selected",
       "submit": "Analyze",
       "submitting": "Analyzing...",
       "api_warning": "Set VITE_KINDWISE_API_KEY to enable API",

@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import Container from "../components/layout/Container";
 import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 import useLanguageStore from "../store/useLanguageStore";
 import { api } from "../utils/axiosInstances";
+import { TbMicroscope, TbPhoto, TbX } from "react-icons/tb";
 
 const readableConfidence = (c) => `${Math.round((c || 0) * 100)}%`;
 
@@ -43,6 +45,7 @@ const PestDiagnosis = () => {
   const [error, setError] = useState("");
   const [results, setResults] = useState([]);
   const [rawResponse, setRawResponse] = useState(null);
+  const fileInputRef = useRef(null);
 
   const normalizePredictions = (data) => {
     if (!data) return [];
@@ -117,14 +120,19 @@ const PestDiagnosis = () => {
   };
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gradient-to-b from-green-50 via-white to-white">
       <Container>
-        <div className="py-8 md:py-12 space-y-8">
-          <header className="space-y-2 text-center md:text-left">
+        <div className="py-8 md:py-12 space-y-10">
+          <header className="space-y-4 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+              <TbMicroscope /> <span>{t("pest.badge")}</span>
+            </div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
               {t("pest.title")}
             </h1>
-            <p className="text-gray-600 max-w-3xl">{t("pest.subtitle")}</p>
+            <p className="text-gray-600 max-w-3xl mx-auto md:mx-0">
+              {t("pest.subtitle")}
+            </p>
           </header>
 
           <Card className="p-6">
@@ -133,24 +141,56 @@ const PestDiagnosis = () => {
               onSubmit={handleSubmit}
             >
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t("pest.form.image")}
                 </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none"
-                />
+                <div className="relative">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                    id="file-upload"
+                  />
+                  <div className="flex items-center gap-3">
+                    <label
+                      htmlFor="file-upload"
+                      className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer font-medium text-sm whitespace-nowrap"
+                    >
+                      <TbPhoto className="w-5 h-5" />
+                      {imageFile ? t("pest.form.change_file") : t("pest.form.choose_file")}
+                    </label>
+                    {imageFile ? (
+                      <div className="flex items-center gap-2 flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700">
+                        <span className="truncate flex-1">{imageFile.name}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setImageFile(null);
+                            if (fileInputRef.current) {
+                              fileInputRef.current.value = "";
+                            }
+                          }}
+                          className="text-gray-400 hover:text-red-600 transition-colors p-1"
+                          aria-label="Remove file"
+                        >
+                          <TbX className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-500">
+                        {t("pest.form.no_file_selected")}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="md:col-span-1 flex gap-3">
-                <button
-                  disabled={loading}
-                  type="submit"
-                  className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
-                >
+                <Button type="submit" disabled={loading} variant="primary" size="md">
                   {loading ? t("pest.form.submitting") : t("pest.form.submit")}
-                </button>
+                </Button>
                 {apiKeyMissing && (
                   <span className="text-xs text-amber-700 bg-amber-100 rounded px-2 py-1 self-center">
                     {t("pest.form.api_warning")}
@@ -159,7 +199,7 @@ const PestDiagnosis = () => {
               </div>
             </form>
             {error && (
-              <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded p-2">
+              <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
                 {error}
               </div>
             )}
@@ -168,7 +208,7 @@ const PestDiagnosis = () => {
           {results.length > 0 && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {results.map((r, idx) => (
-                <Card key={idx} className="p-5">
+                <Card key={idx} className="p-5 card-hover">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="text-lg font-semibold text-gray-900">
@@ -209,14 +249,17 @@ const PestDiagnosis = () => {
                     </ul>
                   </div>
                   {r.details?.url && (
-                    <a
+                    <Button
+                      as="a"
                       href={r.details.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block mt-3 text-green-700 hover:text-green-800 text-sm"
+                      variant="ghost"
+                      size="sm"
+                      className="mt-3 px-0"
                     >
                       {t("pest.cards.learn_more")}
-                    </a>
+                    </Button>
                   )}
                 </Card>
               ))}
@@ -229,10 +272,10 @@ const PestDiagnosis = () => {
                 {t("pest.cards.no_description")}
               </div>
               <details className="mt-3">
-                <summary className="cursor-pointer text-sm text-gray-800 font-medium">
+                <summary className="cursor-pointer text-sm text-gray-800 font-medium hover:text-green-700 transition-colors">
                   Raw response
                 </summary>
-                <pre className="mt-2 text-xs bg-gray-50 border border-gray-200 rounded p-3 overflow-auto max-h-80">
+                <pre className="mt-2 text-xs bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-auto max-h-80">
                   {JSON.stringify(rawResponse, null, 2)}
                 </pre>
               </details>

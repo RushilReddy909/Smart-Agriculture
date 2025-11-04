@@ -151,12 +151,16 @@
     }
   },
   "pest": {
+    "badge": "AI-संचालित पहचान",
     "title": "कीट और रोग निदान",
     "subtitle": "संभावित कीट/रोग पहचानने और उपचार सुझाव देखने के लिए फसल की फोटो अपलोड करें।",
     "form": {
       "image": "फसल की छवि",
       "crop": "फसल",
       "crop_placeholder": "फसल चुनें",
+      "choose_file": "फ़ाइल चुनें",
+      "change_file": "फ़ाइल बदलें",
+      "no_file_selected": "कोई फ़ाइल चयनित नहीं",
       "submit": "विश्लेषण करें",
       "submitting": "विश्लेषण जारी...",
       "api_warning": "API सक्षम करने के लिए VITE_KINDWISE_API_KEY सेट करें",

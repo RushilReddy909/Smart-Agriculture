@@ -8,5 +8,6 @@ JWT_REFRESH=your_jwt_refresh
 NODE_ENV=development/production
 OPENWEATHER_API_KEY=xxx
 OPENSPLASH_SECRET=xxx
-KINDWISE_API_KEY=
+KINDWISE_API_KEY=xxx
+GEMINI_API_KEY=xxx
 ```

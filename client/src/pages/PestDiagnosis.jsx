@@ -6,37 +6,36 @@ import useLanguageStore from "../store/useLanguageStore";
 import { api } from "../utils/axiosInstances";
 import { TbMicroscope, TbPhoto, TbX } from "react-icons/tb";
 
-const readableConfidence = (c) => `${Math.round((c || 0) * 100)}%`;
+const DIAGNOSIS_ENDPOINT = "/pest/identify";
 
-const resizeAndCompressToBase64 = (
-  file,
-  maxW = 1024,
-  maxH = 1024,
-  quality = 0.7
-) =>
-  new Promise((resolve, reject) => {
-    const img = new Image();
+// 1. New helper function to convert File object to Base64 string
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      img.onload = () => {
-        let { width, height } = img;
-        const ratio = Math.min(maxW / width, maxH / height, 1);
-        const targetW = Math.round(width * ratio);
-        const targetH = Math.round(height * ratio);
-        const canvas = document.createElement("canvas");
-        canvas.width = targetW;
-        canvas.height = targetH;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, targetW, targetH);
-        const dataUrl = canvas.toDataURL("image/jpeg", quality);
-        resolve(dataUrl.split(",")[1]);
-      };
-      img.onerror = reject;
-      img.src = reader.result;
-    };
-    reader.onerror = reject;
     reader.readAsDataURL(file);
+    reader.onload = () => {
+      // Extract only the Base64 data part (after the comma)
+      const base64String = reader.result.split(",")[1];
+      resolve(base64String);
+    };
+    reader.onerror = (error) => reject(error);
   });
+};
+
+const validationSchema = Yup.object().shape({
+  cropImage: Yup.mixed()
+    .required("A crop image is required for diagnosis.")
+    .test(
+      "fileSize",
+      "File size is too large (max 5MB)",
+      (value) => value && value.size <= 5242880
+    )
+    .test(
+      "fileType",
+      "Unsupported File Format (.jpg or .png only)",
+      (value) => value && ["image/jpeg", "image/png"].includes(value.type)
+    ),
+});
 
 const PestDiagnosis = () => {
   const { t } = useLanguageStore();
@@ -47,76 +46,68 @@ const PestDiagnosis = () => {
   const [rawResponse, setRawResponse] = useState(null);
   const fileInputRef = useRef(null);
 
-  const normalizePredictions = (data) => {
-    if (!data) return [];
-    const candidates = [
-      data.result?.diseases,
-      data.result?.predictions,
-      data.result?.suggestions,
-      data.predictions,
-      data.diseases,
-      data.suggestions,
-    ].filter(Array.isArray);
-    const arr = candidates[0] || [];
-    return arr.map((item) => ({
-      common_name: item.common_name || item.name || item.label || item.title,
-      scientific_name:
-        item.scientific_name || item.cause || item.taxonomy?.scientific_name,
-      probability: item.probability ?? item.confidence ?? item.score,
-      image: item.image || item.images?.[0]?.url,
-      details: item.details || {
-        description: item.description,
-        url: item.url,
-        treatment: item.treatment,
-      },
-      treatment: item.treatment,
-      description: item.description,
-      url: item.url,
-    }));
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setValue("cropImage", file, { shouldValidate: true });
+
+    if (file) {
+      setPreviewURL(URL.createObjectURL(file));
+    } else {
+      setPreviewURL(null);
+    }
   };
 
-  const apiKeyMissing = useMemo(
-    () => !import.meta.env.VITE_KINDWISE_API_KEY,
-    []
-  );
+  const onSubmit = async (data) => {
+    setDiagnosisResult(null);
+    setApiError("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setResults([]);
-
-    if (!imageFile) {
-      setError(t("pest.form.errors.image"));
-      return;
-    }
     try {
-      setLoading(true);
-      const imageBase64 = await resizeAndCompressToBase64(
-        imageFile,
-        1280,
-        1280,
-        0.7
-      );
+      // 2. Convert the file object to a Base64 string
+      const base64Image = await fileToBase64(data.cropImage);
 
-      // NOTE: Endpoint and payload format should follow crop.health docs.
-      // Replace the URL/body if your account requires a different version/path.
-      const { data } = await api.post("/pest/identify", {
-        images: [imageBase64],
-        details: ["url", "treatment", "description", "symptoms", "severity"],
-        top_n: 3,
-      });
-      setRawResponse(data);
-      const suggestions = normalizePredictions(data);
-      setResults((suggestions || []).slice(0, 3));
+      // 3. Prepare the JSON payload as required by the backend API: {"images": ["base64_string"]}
+      const payload = {
+        images: [base64Image],
+      };
+
+      // 4. Send the JSON payload
+      const response = await api.post(DIAGNOSIS_ENDPOINT, payload);
+
+      // 5. Handle the structured API response
+      if (response.data && response.data.disease) {
+        setDiagnosisResult({
+          disease: response.data.disease,
+          confidence: response.data.confidence,
+          treatment: response.data.treatment,
+        });
+      } else {
+        setApiError(
+          response.data?.message ||
+            "The diagnosis API returned an unexpected or empty response. Check API logs."
+        );
+      }
     } catch (err) {
-      setError(
-        err.response?.data?.error ||
-          err.message ||
-          t("pest.form.errors.generic")
+      console.error("API Error:", err);
+      // Display the specific error message from the backend if available
+      setApiError(
+        err.response?.data?.message ||
+          "Failed to get a diagnosis. Please check the API is running and try again."
       );
-    } finally {
-      setLoading(false);
     }
+  };
+
+  const formatConfidence = (score) => {
+    if (typeof score !== "number" || isNaN(score)) return "N/A";
+    return `${(score * 100).toFixed(1)}%`;
   };
 
   return (
@@ -220,9 +211,9 @@ const PestDiagnosis = () => {
                         {r.scientific_name || r.cause || ""}
                       </div>
                     </div>
-                    <div className="text-sm px-2 py-1 rounded bg-green-50 text-green-700 border border-green-100">
-                      {readableConfidence(r.probability || r.confidence)}
-                    </div>
+                    <h2 className="heading-secondary text-red-600 capitalize">
+                      {diagnosisResult.disease || "Unknown Disease"}
+                    </h2>
                   </div>
                   {r.image && (
                     <img
@@ -282,20 +273,7 @@ const PestDiagnosis = () => {
                 </pre>
               </details>
             </Card>
-          )}
-
-          <p className="text-xs text-gray-500">
-            {t("pest.disclaimer")} (
-            <a
-              className="underline"
-              href="https://www.kindwise.com/crop-health"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              crop.health
-            </a>
-            )
-          </p>
+          </div>
         </div>
       </Container>
     </div>

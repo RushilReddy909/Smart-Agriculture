@@ -38,7 +38,6 @@ const Navigation = () => {
 
   const publicLinks = [
     { path: "/", label: t("navigation.about_us") },
-    { path: "/natural-pesticides", label: t("navigation.education") },
     { path: "/login", label: t("navigation.login") },
     { path: "/signup", label: t("navigation.signup") },
   ];
@@ -120,6 +119,18 @@ const Navigation = () => {
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     हिंदी (Hindi)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("TEL")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    తెలుగు (Telugu)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("CHA")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    छत्तीसगढ़ी (Chhattisgarhi)
                   </button>
                 </div>
               )}

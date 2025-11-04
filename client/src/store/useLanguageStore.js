@@ -1,12 +1,16 @@
 import { create } from "zustand";
 import en from "../locales/en.json";
 import hi from "../locales/hi.json";
+import chatt from "../locales/chatt.json";
+import tel from "../locales/tel.json";
 
 const LANG_STORAGE_KEY = "appLang";
 
 const locales = {
   EN: en,
   HI: hi,
+  TEL: tel,
+  CHA: chatt,
 };
 
 const getInitialLang = () => {

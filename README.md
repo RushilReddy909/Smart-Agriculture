@@ -6,4 +6,7 @@ MONGO_URL=your_mongodb_url
 JWT_SECRET=your_jwt_secret
 JWT_REFRESH=your_jwt_refresh
 NODE_ENV=development/production
+OPENWEATHER_API_KEY=xxx
+OPENSPLASH_SECRET=xxx
+KINDWISE_API_KEY=
 ```

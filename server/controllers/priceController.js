@@ -1,3 +1,5 @@
+import genAI from "../utils/geminiClient.js";
+
 export const predictPrice = async (req, res) => {
     try {
       const { crop, market, period } = req.body;

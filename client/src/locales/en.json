@@ -1,0 +1,518 @@
+{
+  "HomePage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "hero": {
+      "heading": {
+        "p1": "Welcome to",
+        "p2": "Smart Agriculture"
+      },
+      "subtitle": "Empowering farmers with smart solutions — crop suggestions, pest control, weather predictions, and more. Available in multiple languages to serve farming communities worldwide.",
+      "feature": {
+        "management": "🌱 Smart Crop Management",
+        "weather": "🌤️ Weather Predictions",
+        "pest": "🔬 Pest Control Solutions",
+        "analytics": "📊 Data Analytics"
+      },
+      "buttons": {
+        "start": "Get Started Free",
+        "login": "Sign In"
+      }
+    },
+    "platform": {
+      "stats": {
+        "1": {
+          "label": "Crop Types",
+          "description": "Supported varieties"
+        },
+        "2": {
+          "label": "Monitoring",
+          "description": "Real-time tracking"
+        },
+        "3": {
+          "label": "Powered",
+          "description": "Smart insights"
+        }
+      },
+      "title": "Platform Ready for Modern Farming",
+      "features": {
+        "1": "Cloud-based platform",
+        "2": "Mobile responsive",
+        "3": "Multi-language support"
+      }
+    },
+    "home": {
+      "title": "Revolutionizing Agriculture",
+      "subtitle": "Discover how our smart solutions are transforming farming practices and helping farmers achieve better results with less effort.",
+      "additional": {
+        "title": "Ready to Transform Your Farm?",
+        "subtitle": "Join thousands of farmers who are already using our platform to increase their productivity and profitability."
+      },
+      "features": {
+        "1": "Free to start",
+        "2": "No setup fees",
+        "3": "24/7 support"
+      },
+      "card": {
+        "1": {
+          "title": "Smart Crop Management",
+          "description": "Monitor your crops with AI-powered insights and get personalized recommendations for optimal growth."
+        },
+        "2": {
+          "title": "Precision Farming",
+          "description": "Utilize advanced analytics and IoT sensors to optimize resource usage and maximize yield."
+        },
+        "3": {
+          "title": "Sustainable Practices",
+          "description": "Implement eco-friendly farming techniques that protect the environment while boosting productivity."
+        }
+      }
+    }
+  },
+  "LoginPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your Smart Agriculture account",
+      "form": {
+        "email_label": "Email Address",
+        "email_placeholder": "Enter your email",
+        "password_label": "Password",
+        "password_placeholder": "Enter your password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "submit": "Sign In",
+        "submitting": "Signing in..."
+      },
+      "footer": {
+        "no_account": "Don't have an account?",
+        "signup_link": "Sign up for free"
+      }
+    }
+  },
+  "SignupPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Join Smart Agriculture and start your farming journey",
+      "form": {
+        "full_name_label": "Full Name",
+        "full_name_placeholder": "Enter your full name",
+        "email_label": "Email Address",
+        "email_placeholder": "Enter your email",
+        "password_label": "Password",
+        "password_placeholder": "Create a password",
+        "confirm_password_label": "Confirm Password",
+        "confirm_password_placeholder": "Confirm your password",
+        "terms": "I agree to the",
+        "terms_link": "Terms of Service",
+        "submit": "Create Account",
+        "submitting": "Creating Account..."
+      },
+      "footer": {
+        "has_account": "Already have an account?",
+        "login_link": "Sign in"
+      }
+    }
+  },
+  "FeaturesPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "features": {
+      "title": "Explore Our Smart Tools",
+      "subtitle": "Discover all the features designed to help you farm smarter.",
+      "items": {
+        "1": {
+          "title": "Seasonal Crop Suggestions",
+          "description": "Get general crop recommendations based on the current agricultural season."
+        },
+        "2": {
+          "title": "Market Price Predictor",
+          "description": "AI-powered price forecasts from trends and demand to time your sale."
+        },
+        "3": {
+          "title": "Pest & Disease Diagnosis",
+          "description": "Identify pests/diseases from images using crop.health API."
+        },
+        "4": {
+          "title": "Natural Pesticides",
+          "description": "Learn organic remedies like vermicompost, neem spray, and more."
+        },
+        "5": {
+          "title": "AI Crop Prediction",
+          "description": "Provide your farm's data to our AI model to get a hyper-personalized crop prediction."
+        },
+        "6": {
+          "title": "Weather Prediction",
+          "description": "Get a 7-day weather forecast for your location to help you plan farming activities."
+        }
+      }
+    }
+  },
+  "NaturalPesticidesPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "education": {
+      "badge": "Organic & eco-safe",
+      "title": "Natural Pesticides & Organic Preparations",
+      "subtitle": "Simple, low-cost, and effective preparations like vermicompost, neem oil spray, and garlic–chili extract to manage pests while enriching soil health.",
+      "note": "Tip: Always test any spray on a small area first and apply in the evening to avoid leaf burn.",
+      "benefits": {
+        "1": { "title": "Safe for crops", "desc": "Gentle on plants when used properly." },
+        "2": { "title": "Residue-free", "desc": "Minimal chemical residues on produce." },
+        "3": { "title": "Low-cost inputs", "desc": "Use farm waste and common ingredients." },
+        "4": { "title": "Soil friendly", "desc": "Supports microbes and soil structure." }
+      },
+      "images": {
+        "vermicompost_alt": "Vermicompost pile ready for use",
+        "bedding_alt": "Bedding setup for vermicompost bin",
+        "neem_alt": "Neem seeds and oil preparation",
+        "spray_alt": "Farmer spraying organic solution on leaves",
+        "garlic_alt": "Garlic bulbs for bio-pesticide",
+        "chili_alt": "Green chilies for bio-pesticide"
+      },
+      "sections": {
+        "vermicompost": {
+          "title": "Vermicompost (Worm Compost)",
+          "desc": "Nutrient-rich organic manure produced using earthworms. Improves soil structure, water retention, and microbial activity.",
+          "steps": {
+            "1": "Prepare a shaded bin with small holes for drainage; add a 2–3 cm layer of dry leaves as bedding.",
+            "2": "Start with cow dung mixed with kitchen/vegetable waste; avoid citrus, oily, and spicy waste.",
+            "3": "Introduce earthworms (Eisenia fetida or local species) and keep the pile moist (not wet).",
+            "4": "Harvest the dark, crumbly compost in 45–60 days; use 2–5 kg per plant depending on size."
+          }
+        },
+        "neem_oil": {
+          "title": "Neem Oil Spray",
+          "desc": "Natural insect growth regulator effective against aphids, whiteflies, and mites.",
+          "mix": "Mix 5–10 ml cold-pressed neem oil with 1 liter water + few drops of mild soap/emulsifier.",
+          "application": "Spray on both sides of leaves in the evening; avoid hot midday sun.",
+          "frequency": "Repeat every 7–10 days, or after rains, until pests are controlled."
+        },
+        "garlic_chili": {
+          "title": "Garlic–Chili Bio-Pesticide",
+          "desc": "Repels sucking and chewing insects with a strong natural extract.",
+          "steps": {
+            "1": "Grind 100 g garlic + 50 g green chilies with little water.",
+            "2": "Ferment covered for 24 hours; strain and store the extract.",
+            "3": "Dilute 30–40 ml extract per 1 liter water; add a few drops of soap.",
+            "4": "Spray in the evening; avoid contact with eyes and wash hands after use."
+          }
+        }
+      },
+      "print": {
+        "title": "Printable Guides",
+        "desc": "Download or print a one-page guide for field use.",
+        "vermicompost": "Vermicompost Guide (PDF)",
+        "neem": "Neem-based Biopesticide Guide (PDF)",
+        "garlic_chili": "Garlic–Chili Extract Guide (PDF)",
+        "print": "Print"
+      },
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "q1": "Can I mix these sprays together?",
+        "a1": "Avoid mixing initially. Test separately to check plant sensitivity.",
+        "q2": "When should I spray for best results?",
+        "a2": "Spray in the evening on both sides of leaves and repeat as needed."
+      },
+      "video": {
+        "title": "How to Prepare Organic Sprays (Video)",
+        "alt": "Tutorial video for preparing organic sprays",
+        "caption": "Demonstration for preparing and applying natural sprays on crops."
+      },
+      "safety": {
+        "title": "Safety & Best Practices",
+        "1": "Wear gloves and a mask while preparing and spraying.",
+        "2": "Store preparations away from children and livestock.",
+        "3": "Maintain field hygiene: remove heavily infested leaves and weeds."
+      }
+    }
+  },
+  "PestDiagnosisPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "pest": {
+      "badge": "AI-Powered Detection",
+    "title": "Pest & Disease Diagnosis",
+      "subtitle": "Upload a crop photo to identify likely pests or diseases and see treatment suggestions.",
+      "form": {
+        "image": "Crop image",
+        "crop": "Crop",
+        "crop_placeholder": "Select crop",
+        "choose_file": "Choose File",
+      "change_file": "Change File",
+      "no_file_selected": "No file selected",
+      "submit": "Analyze",
+        "submitting": "Analyzing...",
+        "api_warning": "Set VITE_KINDWISE_API_KEY to enable API",
+        "errors": {
+          "image": "Please select an image.",
+          "crop": "Please choose a crop.",
+          "request": "Request failed",
+          "generic": "Something went wrong. Try again."
+        }
+      },
+      "cards": {
+        "unknown": "Unknown",
+        "no_description": "No description available.",
+        "treatment": "Suggested treatment",
+        "learn_more": "Learn more"
+      },
+      "disclaimer": "Powered by Kindwise crop.health. Always validate results with local agronomy guidance."
+    }
+  },
+  "MarketPricePage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "market_price": {
+      "title": "Market Price Predictor",
+      "subtitle": "AI-powered tool that predicts crop prices based on market trends and demand to help farmers sell at the right time.",
+      "form": {
+        "crop_label": "Crop",
+        "crop_placeholder": "e.g., Tomato",
+        "market_label": "Market (optional)",
+        "market_placeholder": "e.g., Delhi Azadpur Mandi",
+        "period_label": "Forecast Period",
+        "period_options": {
+          "7d": "Next 7 days",
+          "14d": "Next 14 days",
+          "30d": "Next 30 days"
+        },
+        "submit": "Predict Price",
+        "submitting": "Predicting..."
+      },
+      "prediction": {
+        "title": "Prediction",
+        "empty": "Fill the form to view forecast. This tool will visualize expected price movement and confidence to help timing your sale.",
+        "crop": "Crop",
+        "market": "Market",
+        "predicted_price": "Predicted Price (₹/kg)"
+      },
+      "tips": {
+        "title": "Tips",
+        "1": "Track price spikes and plan logistics before peak days.",
+        "2": "Consider storage costs vs. potential gains from waiting.",
+        "3": "Diversify markets: compare nearby mandis for better rates."
+      }
+    }
+  },
+  "CropPredictionPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "crop_ai": {
+      "title": "AI-Powered Crop Recommendation",
+      "subtitle": "Enter your farm's soil and location data to get a hyper-personalized crop suggestion from our AI model.",
+      "form": {
+        "title": "Enter Your Farm's Data",
+        "nitrogen_label": "Nitrogen",
+        "nitrogen_placeholder": "e.g., 83",
+        "phosphorous_label": "Phosphorous",
+        "phosphorous_placeholder": "e.g., 45",
+        "potassium_label": "Potassium",
+        "potassium_placeholder": "e.g., 35",
+        "ph_label": "Soil pH",
+        "ph_placeholder": "e.g., 6.7",
+        "state_label": "State",
+        "state_placeholder": "e.g., Maharashtra",
+        "district_label": "District",
+        "district_placeholder": "e.g., Pune",
+        "month_label": "Month",
+        "month_placeholder": "Select Month",
+        "submit": "Get AI Recommendation",
+        "submitting": "Analyzing..."
+      },
+      "results": {
+        "loading": "Our AI is analyzing your data...",
+        "recommendation": "Our AI recommends you plant:",
+        "empty": "Your personalized crop recommendation will appear here.",
+        "error_title": "An Error Occurred"
+      },
+      "validation": {
+        "nitrogen_required": "Nitrogen is required",
+        "nitrogen_type": "Must be a number",
+        "phosphorous_required": "Phosphorous is required",
+        "phosphorous_type": "Must be a number",
+        "potassium_required": "Potassium is required",
+        "potassium_type": "Must be a number",
+        "ph_required": "pH is required",
+        "ph_type": "Must be a number",
+        "state_required": "State is required",
+        "district_required": "District is required",
+        "month_required": "Month is required"
+      }
+    }
+  },
+  "WeatherPredictionPage": {
+    "navigation": {
+      "title": "Smart Agriculture",
+      "about_us": "About Us",
+      "education": "Natural Pesticides",
+      "login": "Login",
+      "signup": "Sign Up",
+      "explore_features": "Explore Features",
+      "logout": "Logout",
+      "logging": "Logging Out"
+    },
+    "weather": {
+      "title": "Localized Weather Forecast",
+      "subtitle": "Enter a city name to get a 5-day weather forecast.",
+      "form": {
+        "city_placeholder": "Enter city name",
+        "submit": "Get Forecast",
+        "submitting": "Fetching..."
+      },
+      "forecast": {
+        "loading": "Fetching the latest weather data...",
+        "current_title": "Weather in",
+        "forecast_title": "Next 5 Days",
+        "humidity": "Humidity",
+        "wind": "Wind"
+      },
+      "error": "Failed to fetch weather data."
+    }
+  },
+  "CropSuggestionPage": {
+    "crop_suggestion": {
+      "title": "Find the Perfect Crops for This Season",
+      "subtitle": "Our tool analyzes the current date to determine the agricultural season and suggests the most suitable crops for you to plant right now.",
+      "button": "Get My Suggestions",
+      "season_header": "Based on today, it's",
+      "season_header_2": "season.",
+      "recommendations": "Here are our top recommendations:",
+      "explore_title": "Explore Crops from Other Seasons",
+      "seasons": {
+        "kharif": "Kharif (Monsoon)",
+        "rabi": "Rabi (Winter)",
+        "zaid": "Zaid (Summer)"
+      },
+      "crop_info": {
+        "type": "Type",
+        "difficulty": "Difficulty",
+        "to_grow": "to grow"
+      },
+      "shared_terms": {
+        "cereal": "Cereal",
+        "fiber_crop": "Fiber Crop",
+        "cash_crop": "Cash Crop",
+        "pulse": "Pulse",
+        "fruit": "Fruit",
+        "vegetable": "Vegetable",
+        "oilseed": "Oilseed",
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      },
+      "crops": {
+        "rice_paddy": {
+          "name": "Rice (Paddy)",
+          "description": "A staple food crop that requires significant water, making it ideal for the monsoon season."
+        },
+        "cotton": {
+          "name": "Cotton",
+          "description": "A cash crop that grows well in the warm and humid conditions of the Kharif season."
+        },
+        "sugarcane": {
+          "name": "SugarcDMaize (Corn)",
+          "description": "A versatile crop used for food and animal feed, thriving in monsoon climates."
+        },
+        "maize": {
+          "name": "Maize (Corn)",
+          "description": "A versatile crop used for food and animal feed, thriving in monsoon climates."
+        },
+        "wheat": {
+          "name": "Wheat",
+          "description": "The primary winter crop in India, requiring cool weather for growth and warm weather for ripening."
+        },
+        "mustard": {
+          "name": "Mustard",
+          "description": "An important oilseed crop that grows well in the cool temperatures of the Rabi season."
+        },
+        "gram": {
+          "name": "Gram (Chickpea)",
+          "description": "A major pulse crop that prefers the dry and cool conditions of the winter months."
+        },
+        "watermelon": {
+          "name": "Watermelon",
+          "description": "A popular summer fruit that requires warm weather and plenty of sunlight to grow."
+        },
+        "cucumber": {
+          "name": "Cucumber",
+          "description": "A fast-growing vegetable that thrives in the heat of the Zaid season."
+        }
+      }
+    }
+  },
+  "chat": {
+    "title": "Agri Assistant",
+    "placeholder": "Ask about farming...",
+    "welcome": "Hello! I'm your AI farming assistant.",
+    "help": "How can I help you today?",
+    "error": "Sorry, I encountered an error. Please try again."
+  }
+}

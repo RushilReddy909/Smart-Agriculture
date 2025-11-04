@@ -11,6 +11,7 @@ import Button from "../components/ui/Button";
 import Container from "../components/layout/Container";
 import { TbUserSquareRounded } from "react-icons/tb";
 import useAuthStore from "../store/useAuthStore";
+import useLanguageStore from "../store/useLanguageStore";
 
 // 1. Define the validation schema with Yup
 const validationSchema = Yup.object().shape({
@@ -32,6 +33,7 @@ function Login() {
 
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
+  const { t } = useLanguageStore();
 
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
@@ -58,10 +60,10 @@ function Login() {
                 <TbUserSquareRounded className="w-8 h-8 text-green-600" />
               </div>
               <h2 className="heading-secondary text-gray-900 mb-2">
-                Welcome Back
+                {t("LoginPage.login.title")}
               </h2>
               <p className="text-body text-gray-600">
-                Sign in to your Smart Agriculture account
+                {t("LoginPage.login.subtitle")}
               </p>
             </div>
 
@@ -71,8 +73,8 @@ function Login() {
               <Input
                 type="email"
                 name="email"
-                label="Email Address"
-                placeholder="Enter your email"
+                label={t("LoginPage.login.form.email_label")}
+                placeholder={t("LoginPage.login.form.email_placeholder")}
                 error={errors.email?.message}
                 {...register("email")}
               />
@@ -80,8 +82,8 @@ function Login() {
               <Input
                 type="password"
                 name="password"
-                label="Password"
-                placeholder="Enter your password"
+                label={t("LoginPage.login.form.password_label")}
+                placeholder={t("LoginPage.login.form.password_placeholder")}
                 error={errors.password?.message}
                 {...register("password")}
               />
@@ -94,30 +96,30 @@ function Login() {
                     className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
                   />
                   <span className="ml-2 text-sm text-gray-600">
-                    Remember me
+                    {t("LoginPage.login.form.remember_me")}
                   </span>
                 </label>
                 <Link
                   to="/forgot-password"
                   className="text-sm text-green-600 hover:text-green-700 font-medium"
                 >
-                  Forgot password?
+                  {t("LoginPage.login.form.forgot_password")}
                 </Link>
               </div>
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Signing in..." : "Sign In"}
+                {isSubmitting ? t("LoginPage.login.form.submitting") : t("LoginPage.login.form.submit")}
               </Button>
             </form>
 
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
+                {t("LoginPage.login.footer.no_account")} {" "}
                 <Link
                   to="/signup"
                   className="font-medium text-green-600 hover:text-green-700"
                 >
-                  Sign up for free
+                  {t("LoginPage.login.footer.signup_link")}
                 </Link>
               </p>
             </div>

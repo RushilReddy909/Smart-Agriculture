@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import Button from "../ui/Button";
 import Container from "../layout/Container";
 import PlatformStats from "../ui/PlatformStats";
+import useLanguageStore from "../../store/useLanguageStore";
 
 const HeroSection = () => {
+  const { t } = useLanguageStore();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-green-50 overflow-hidden">
       {/* Background Pattern */}
@@ -18,24 +21,23 @@ const HeroSection = () => {
         <div className="text-center animate-fade-in">
           {/* Main Heading */}
           <h1 className="heading-primary text-gray-900 mb-6">
-            Welcome to <span className="text-gradient">Smart Agriculture</span>
+            {t("HomePage.hero.heading.p1")} {" "}
+            <span className="text-gradient">{t("HomePage.hero.heading.p2")}</span>
             <span className="text-4xl ml-2">🌾</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-body-large max-w-3xl mx-auto mb-8 leading-relaxed">
-            Empowering farmers with smart solutions — crop suggestions, pest
-            control, weather predictions, and more. Available in multiple
-            languages to serve farming communities worldwide.
+            {t("HomePage.hero.subtitle")}
           </p>
 
           {/* Feature Highlights */}
           <div className="flex flex-wrap justify-center gap-4 mb-10">
             {[
-              "🌱 Smart Crop Management",
-              "🌤️ Weather Predictions",
-              "🔬 Pest Control Solutions",
-              "📊 Data Analytics",
+              t("HomePage.hero.feature.management"),
+              t("HomePage.hero.feature.weather"),
+              t("HomePage.hero.feature.pest"),
+              t("HomePage.hero.feature.analytics"),
             ].map((feature, index) => (
               <div
                 key={index}
@@ -53,13 +55,13 @@ const HeroSection = () => {
                 size="lg"
                 className="min-w-[200px] shadow-lg hover:shadow-xl"
               >
-                Get Started Free
+                {t("HomePage.hero.buttons.start")}
               </Button>
             </Link>
 
             <Link to="/login">
               <Button variant="outline" size="lg" className="min-w-[200px]">
-                Sign In
+                {t("HomePage.hero.buttons.login")}
               </Button>
             </Link>
           </div>

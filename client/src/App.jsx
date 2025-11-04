@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navigation from "./components/layout/Navigation";
+import ChatWidget from "./components/ChatWidget";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -13,8 +14,11 @@ import CropAi from "./pages/CropAi";
 import Weather from "./pages/WeatherPrediction";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import useAuthStore from "./store/useAuthStore";
 
 function App() {
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -39,6 +43,8 @@ function App() {
           <Route path="*" element={<Home />} />
         </Routes>
       </main>
+
+      {isAuthenticated && <ChatWidget />}
     </div>
   );
 }

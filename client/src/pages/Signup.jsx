@@ -80,6 +80,7 @@ function Signup() {
                 name="username"
                 label={t("SignupPage.signup.form.full_name_label")}
                 placeholder={t("SignupPage.signup.form.full_name_placeholder")}
+                autoComplete="username"
                 error={errors.username?.message}
                 {...register("username")}
               />
@@ -89,6 +90,7 @@ function Signup() {
                 name="email"
                 label={t("SignupPage.signup.form.email_label")}
                 placeholder={t("SignupPage.signup.form.email_placeholder")}
+                autoComplete="email"
                 error={errors.email?.message}
                 {...register("email")}
               />

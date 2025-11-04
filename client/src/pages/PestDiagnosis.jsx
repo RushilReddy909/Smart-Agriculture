@@ -1,289 +1,421 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import {
+  TbMicroscope,
+  TbAlertTriangle,
+  TbCheck,
+  TbLoader,
+  TbRefresh,
+} from "react-icons/tb";
 import Container from "../components/layout/Container";
-import Card from "../components/ui/Card";
+import FileInput from "../components/ui/FileInput";
 import Button from "../components/ui/Button";
-import useLanguageStore from "../store/useLanguageStore";
 import { api } from "../utils/axiosInstances";
-import { TbMicroscope, TbPhoto, TbX } from "react-icons/tb";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-
-const DIAGNOSIS_ENDPOINT = "/pest/identify";
-
-// Helper function: convert file → Base64
-const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64String = reader.result.split(",")[1];
-      resolve(base64String);
-    };
-    reader.onerror = (error) => reject(error);
-  });
-};
-
-// Validation
-const validationSchema = Yup.object().shape({
-  cropImage: Yup.mixed()
-    .required("A crop image is required for diagnosis.")
-    .test(
-      "fileSize",
-      "File size is too large (max 5MB)",
-      (value) => value && value.size <= 5242880
-    )
-    .test(
-      "fileType",
-      "Unsupported File Format (.jpg or .png only)",
-      (value) => value && ["image/jpeg", "image/png"].includes(value.type)
-    ),
-});
 
 const PestDiagnosis = () => {
-  const { t } = useLanguageStore();
-  const [imageFile, setImageFile] = useState(null);
+  const [imageBase64, setImageBase64] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [results, setResults] = useState([]);
-  const [rawResponse, setRawResponse] = useState(null);
-  const [diagnosisResult, setDiagnosisResult] = useState(null);
-  const [apiError, setApiError] = useState("");
-  const [apiKeyMissing, setApiKeyMissing] = useState(false);
-  const [previewURL, setPreviewURL] = useState(null);
+  const [error, setError] = useState(null);
+  const [result, setResult] = useState(null);
 
-  const fileInputRef = useRef(null);
+  const handleFileSelect = (base64, file) => {
+    setImageBase64(base64);
+    setError(null);
+    setResult(null);
+  };
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
+  const handleIdentify = async () => {
+    if (!imageBase64) {
+      setError("Please select an image first");
+      return;
+    }
 
-  const onSubmit = async (data) => {
-    setDiagnosisResult(null);
-    setApiError("");
     setLoading(true);
+    setError(null);
+    setResult(null);
 
     try {
-      const base64Image = await fileToBase64(data.cropImage);
-      const payload = { images: [base64Image] };
+      const response = await api.post("/pest/identify", {
+        images: [imageBase64],
+        top_n: 1, // Only get the most probable result
+      });
 
-      const response = await api.post(DIAGNOSIS_ENDPOINT, payload);
-      setRawResponse(response.data);
-
-      if (response.data && response.data.disease) {
-        setDiagnosisResult({
-          disease: response.data.disease,
-          confidence: response.data.confidence,
-          treatment: response.data.treatment,
-        });
-        setResults(response.data.results || []);
-      } else {
-        setApiError(
-          response.data?.message ||
-            "The diagnosis API returned an unexpected response."
+      // Check if response is HTML (API error)
+      if (
+        typeof response.data === "string" &&
+        response.data.includes("<!DOCTYPE")
+      ) {
+        setError(
+          "Server configuration error: Please check API endpoint and key configuration."
         );
+        console.error(
+          "Received HTML instead of JSON:",
+          response.data.substring(0, 200)
+        );
+        return;
+      }
+
+      if (response.data) {
+        // Log the response structure for debugging
+        console.log("API Response:", response.data);
+        setResult(response.data);
+      } else {
+        setError("No results found. Please try with a different image.");
       }
     } catch (err) {
-      console.error("API Error:", err);
-      setApiError(
+      console.error("Pest identification error:", err);
+
+      // Check if error response is HTML
+      if (
+        err.response?.data &&
+        typeof err.response.data === "string" &&
+        err.response.data.includes("<!DOCTYPE")
+      ) {
+        setError(
+          "API configuration error: The server returned an unexpected response. Please contact support."
+        );
+        return;
+      }
+
+      const errorMessage =
+        err.response?.data?.error ||
+        err.response?.data?.details?.error ||
         err.response?.data?.message ||
-          "Failed to get a diagnosis. Please check if the API is running."
-      );
+        err.message ||
+        "Failed to identify pest. Please try again.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="bg-gradient-to-b from-green-50 via-white to-white">
-      <Container>
-        <div className="py-8 md:py-12 space-y-10">
-          <header className="space-y-4 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-              <TbMicroscope /> <span>{t("PestDiagnosisPage.pest.badge")}</span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-              {t("PestDiagnosisPage.pest.title")}
-            </h1>
-            <p className="text-gray-600 max-w-3xl">
-              {t("PestDiagnosisPage.pest.subtitle")}
-            </p>
-          </header>
+  const handleReset = () => {
+    setImageBase64(null);
+    setError(null);
+    setResult(null);
+  };
 
-          {/* Upload Form */}
-          <Card className="p-6">
-            <form
-              className="grid gap-4 md:grid-cols-3 items-end"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("PestDiagnosisPage.pest.form.image")}
-                </label>
-                <div className="relative">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      setImageFile(file || null);
-                      setValue("cropImage", file, { shouldValidate: true });
-                      setPreviewURL(file ? URL.createObjectURL(file) : null);
-                    }}
-                    className="hidden"
-                    id="file-upload"
-                  />
-                  <div className="flex items-center gap-3">
-                    <label
-                      htmlFor="file-upload"
-                      className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer font-medium text-sm whitespace-nowrap"
-                    >
-                      <TbPhoto className="w-5 h-5" />
-                      {imageFile
-                        ? t("PestDiagnosisPage.pest.form.change_file")
-                        : t("PestDiagnosisPage.pest.form.choose_file")}
-                    </label>
-                    {imageFile ? (
-                      <div className="flex items-center gap-2 flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700">
-                        <span className="truncate flex-1">{imageFile.name}</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setImageFile(null);
-                            setPreviewURL(null);
-                            if (fileInputRef.current) {
-                              fileInputRef.current.value = "";
-                            }
-                          }}
-                          className="text-gray-400 hover:text-red-600 transition-colors p-1"
-                          aria-label="Remove file"
-                        >
-                          <TbX className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-500">
-                        {t("PestDiagnosisPage.pest.form.no_file_selected")}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+  const renderResult = () => {
+    if (!result) return null;
 
-              <div className="md:col-span-1 flex gap-3">
-                <button
-                  disabled={loading}
-                  type="submit"
-                  className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
-                >
-                  {loading
-                    ? t("PestDiagnosisPage.pest.form.submitting")
-                    : t("PestDiagnosisPage.pest.form.submit")}
-                </button>
-                {apiKeyMissing && (
-                  <span className="text-xs text-amber-700 bg-amber-100 rounded px-2 py-1 self-center">
-                    {t("PestDiagnosisPage.pest.form.api_warning")}
-                  </span>
+    // Handle the actual Kindwise API response structure
+    const apiResult = result.result || result;
+
+    // Get disease/pest suggestions - only show the most probable (first one)
+    let suggestions = [];
+    if (
+      apiResult.disease?.suggestions &&
+      Array.isArray(apiResult.disease.suggestions)
+    ) {
+      suggestions = [apiResult.disease.suggestions[0]]; // Only first (most probable)
+    } else if (apiResult.suggestions && Array.isArray(apiResult.suggestions)) {
+      suggestions = [apiResult.suggestions[0]];
+    } else if (Array.isArray(apiResult)) {
+      suggestions = [apiResult[0]];
+    }
+
+    // Get crop suggestions
+    const cropSuggestions = apiResult.crop?.suggestions || [];
+    const identifiedCrop =
+      cropSuggestions.length > 0 ? cropSuggestions[0] : null;
+
+    if (suggestions.length === 0 || !suggestions[0]) {
+      return (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center gap-3 text-yellow-800">
+            <TbAlertTriangle size={24} />
+            <p className="font-semibold">No identification results found</p>
+          </div>
+          <p className="text-yellow-700 mt-2">
+            We couldn't identify any disease or pest in the image. Please try
+            with a clearer image.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* Crop Identification */}
+        {identifiedCrop && (
+          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-green-100 mb-1">
+                  Identified Crop
+                </p>
+                <h2 className="text-2xl font-bold capitalize">
+                  {identifiedCrop.name}
+                </h2>
+                {identifiedCrop.scientific_name && (
+                  <p className="text-green-100 italic mt-1">
+                    {identifiedCrop.scientific_name}
+                  </p>
                 )}
               </div>
-            </form>
+              {identifiedCrop.probability && (
+                <div className="text-right">
+                  <p className="text-sm text-green-100">Confidence</p>
+                  <p className="text-3xl font-bold">
+                    {(identifiedCrop.probability * 100).toFixed(0)}%
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
-            {error && (
-              <div className="mt-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
-                {error}
-              </div>
-            )}
-          </Card>
+        {/* Disease/Pest Results - Most Probable Only */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <TbCheck className="text-green-600" size={28} />
+            <h2 className="text-2xl font-bold text-gray-900">
+              Identified Disease/Pest
+            </h2>
+          </div>
 
-          {/* Results Section */}
-          {results.length > 0 && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {results.map((r, idx) => (
-                <Card key={idx} className="p-5 card-hover">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-lg font-semibold text-gray-900">
-                        {r.common_name ||
-                          r.name ||
-                          t("PestDiagnosisPage.pest.cards.unknown")}
+          {suggestions.map((suggestion, index) => {
+            const name = suggestion.name || "Unknown";
+            const probability =
+              suggestion.probability || suggestion.confidence || 0;
+            const scientificName = suggestion.scientific_name || "";
+            const entityId =
+              suggestion.details?.entity_id || suggestion.id || "";
+            const language = suggestion.details?.language || "";
+
+            return (
+              <div
+                key={index}
+                className="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-400 transition-all"
+              >
+                {/* Disease/Pest Header with Confidence */}
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-xl font-bold text-gray-900 capitalize">
+                          {name}
+                        </h3>
+                        <div className="bg-green-500 text-white px-4 py-1 rounded-full text-lg font-bold">
+                          {(probability * 100).toFixed(1)}%
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {r.scientific_name || r.cause || ""}
-                      </div>
+                      {scientificName && scientificName !== name && (
+                        <p className="text-sm text-gray-600 italic">
+                          {scientificName}
+                        </p>
+                      )}
                     </div>
-                    <h2 className="heading-secondary text-red-600 capitalize">
-                      {diagnosisResult?.disease || "Unknown Disease"}
-                    </h2>
                   </div>
+                </div>
 
-                  {r.image && (
-                    <img
-                      src={r.image}
-                      alt={r.common_name || r.name}
-                      className="w-full h-40 object-cover rounded-lg mt-3"
-                    />
+                {/* Content - Display all available data from API response */}
+                <div className="p-5 space-y-4">
+                  {/* Scientific Name (if same as name) */}
+                  {scientificName && scientificName === name && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                        Scientific Name
+                      </p>
+                      <p className="text-sm text-gray-700 italic">
+                        {scientificName}
+                      </p>
+                    </div>
                   )}
 
-                  <div className="mt-3 text-sm text-gray-700 leading-6">
-                    {r.details?.description ||
-                      r.description ||
-                      t("PestDiagnosisPage.pest.cards.no_description")}
-                  </div>
+                  {/* Details Object - Display all fields from details */}
+                  {suggestion.details &&
+                    typeof suggestion.details === "object" && (
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                          Details
+                        </p>
+                        <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                          {Object.keys(suggestion.details).map((detailKey) => {
+                            const detailValue = suggestion.details[detailKey];
+                            if (
+                              detailValue === null ||
+                              detailValue === undefined ||
+                              detailValue === ""
+                            ) {
+                              return null;
+                            }
 
-                  <div className="mt-4">
-                    <div className="text-sm font-medium text-gray-800 mb-1">
-                      {t("PestDiagnosisPage.pest.cards.treatment")}
-                    </div>
-                    <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                      {(r.details?.treatment || r.treatment || [])
-                        .slice(0, 3)
-                        .map((step, i) => (
-                          <li key={i}>
-                            {typeof step === "string" ? step : step?.text}
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
+                            return (
+                              <div key={detailKey}>
+                                <p className="text-xs font-medium text-gray-600 mb-1">
+                                  {detailKey.replace(/_/g, " ")}
+                                </p>
+                                {typeof detailValue === "object" &&
+                                !Array.isArray(detailValue) ? (
+                                  <pre className="text-xs text-gray-700 bg-white p-2 rounded overflow-auto border border-gray-200">
+                                    {JSON.stringify(detailValue, null, 2)}
+                                  </pre>
+                                ) : Array.isArray(detailValue) ? (
+                                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                                    {detailValue.map((item, idx) => (
+                                      <li key={idx}>{String(item)}</li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="text-sm text-gray-700">
+                                    {String(detailValue)}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
 
-                  {r.details?.url && (
+                  {/* Display any other fields from the API response (excluding already shown fields) */}
+                  {Object.keys(suggestion).map((key) => {
+                    // Skip fields we've already displayed
+                    if (
+                      [
+                        "name",
+                        "probability",
+                        "confidence",
+                        "scientific_name",
+                        "details",
+                      ].includes(key)
+                    ) {
+                      return null;
+                    }
+
+                    const value = suggestion[key];
+                    if (value === null || value === undefined || value === "") {
+                      return null;
+                    }
+
+                    return (
+                      <div key={key}>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                          {key.replace(/_/g, " ")}
+                        </p>
+                        {typeof value === "object" && !Array.isArray(value) ? (
+                          <pre className="text-xs text-gray-700 bg-gray-50 p-2 rounded overflow-auto">
+                            {JSON.stringify(value, null, 2)}
+                          </pre>
+                        ) : Array.isArray(value) ? (
+                          <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                            {value.map((item, idx) => (
+                              <li key={idx}>{String(item)}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-gray-700">
+                            {String(value)}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-gradient-to-b from-green-50 via-white to-white min-h-screen py-8 md:py-12">
+      <Container>
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
+              <TbMicroscope size={20} />
+              <span>AI-Powered Pest & Disease Detection</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
+              Pest & Disease Diagnosis
+            </h1>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Upload an image of your crop to identify diseases, pests, and get
+              treatment recommendations using advanced AI technology.
+            </p>
+          </div>
+
+          {/* Main Content - Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - File Upload (Smaller) */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sticky top-4">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                  Upload Image
+                </h2>
+                <FileInput
+                  onFileSelect={handleFileSelect}
+                  accept="image/*"
+                  maxSize={10 * 1024 * 1024}
+                  disabled={loading}
+                />
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-3 mt-4">
+                  <Button
+                    onClick={handleIdentify}
+                    disabled={!imageBase64 || loading}
+                    className="w-full"
+                  >
+                    {loading ? (
+                      <>
+                        <TbLoader className="animate-spin" size={18} />
+                        <span className="ml-2">Identifying...</span>
+                      </>
+                    ) : (
+                      <>
+                        <TbMicroscope size={18} />
+                        <span className="ml-2">Identify</span>
+                      </>
+                    )}
+                  </Button>
+                  {imageBase64 && (
                     <Button
-                      as="a"
-                      href={r.details.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="ghost"
-                      size="sm"
-                      className="mt-3 px-0"
+                      onClick={handleReset}
+                      variant="outline"
+                      disabled={loading}
+                      className="w-full"
                     >
-                      {t("PestDiagnosisPage.pest.cards.learn_more")}
+                      <TbRefresh size={18} />
+                      <span className="ml-2">Reset</span>
                     </Button>
                   )}
-                </Card>
-              ))}
-            </div>
-          )}
+                </div>
 
-          {/* Raw Response Display */}
-          {results.length === 0 && rawResponse && (
-            <Card className="p-5">
-              <div className="text-sm text-gray-700">
-                {t("PestDiagnosisPage.pest.cards.no_description")}
+                {/* Error Message */}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
+                    <div className="flex items-center gap-2 text-red-800">
+                      <TbAlertTriangle size={18} />
+                      <p className="font-semibold text-sm">Error</p>
+                    </div>
+                    <p className="text-red-700 text-sm mt-1">{error}</p>
+                  </div>
+                )}
               </div>
-              <details className="mt-3">
-                <summary className="cursor-pointer text-sm text-gray-800 font-medium hover:text-green-700 transition-colors">
-                  Raw response
-                </summary>
-                <pre className="mt-2 text-xs bg-gray-50 border border-gray-200 rounded-lg p-3 overflow-auto max-h-80">
-                  {JSON.stringify(rawResponse, null, 2)}
-                </pre>
-              </details>
-            </Card>
-          )}
+            </div>
+
+            {/* Right Column - Results (Larger) */}
+            <div className="lg:col-span-2">
+              {result ? (
+                renderResult()
+              ) : (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-4 text-gray-400">
+                    <TbMicroscope size={64} />
+                    <p className="text-lg font-medium">No image uploaded yet</p>
+                    <p className="text-sm">
+                      Upload an image on the left to get started
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </Container>
     </div>

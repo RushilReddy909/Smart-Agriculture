@@ -7,4 +7,3 @@ const router = express.Router();
 router.post("/message", verifyToken, handleChatMessage);
 
 export default router;
-

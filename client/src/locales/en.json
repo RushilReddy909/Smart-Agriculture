@@ -282,14 +282,12 @@
       "logging": "Logging Out"
     },
     "pest": {
-      "badge": "AI-Powered Detection",
+      "badge": "AI Diagnosis",
     "title": "Pest & Disease Diagnosis",
-      "subtitle": "Upload a crop photo to identify likely pests or diseases and see treatment suggestions.",
-      "form": {
-        "image": "Crop image",
-        "crop": "Crop",
-        "crop_placeholder": "Select crop",
-        "choose_file": "Choose File",
+    "subtitle": "Upload a crop photo to identify likely pests or diseases and see treatment suggestions.",
+    "form": {
+      "image": "Crop image",
+      "choose_file": "Choose File",
       "change_file": "Change File",
       "no_file_selected": "No file selected",
       "submit": "Analyze",

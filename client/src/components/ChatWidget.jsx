@@ -1,10 +1,57 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { TbMessageCircle, TbX, TbSend, TbLoader } from "react-icons/tb";
 import { api } from "../utils/axiosInstances";
 import useChatStore from "../store/useChatStore";
 
+const renderContentWithLinks = (content) => {
+  const parts = [];
+  const regex = /\[([^\]]+)\]\(([^)]+)\)/g; // Regex to find [text](url)
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(content)) !== null) {
+    const textBefore = content.substring(lastIndex, match.index);
+    if (textBefore) {
+      parts.push(textBefore);
+    }
+
+    const linkText = match[1];
+    const url = match[2];
+
+    // Use React Router's Link component for internal navigation
+    parts.push(
+      <Link
+        key={match.index}
+        to={url}
+        className="text-green-600 underline hover:text-green-700 font-medium"
+        onClick={() => useChatStore.getState().closeChat()} // Optional: Close chat on link click
+      >
+        {linkText}
+      </Link>
+    );
+
+    lastIndex = regex.lastIndex;
+  }
+
+  const textAfter = content.substring(lastIndex);
+  if (textAfter) {
+    parts.push(textAfter);
+  }
+
+  return <>{parts}</>;
+};
+
 const ChatWidget = () => {
-  const { messages, isOpen, loading, openChat, closeChat, addMessage, setLoading } = useChatStore();
+  const {
+    messages,
+    isOpen,
+    loading,
+    openChat,
+    closeChat,
+    addMessage,
+    setLoading,
+  } = useChatStore();
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -30,11 +77,14 @@ const ChatWidget = () => {
         message: userMessage,
         history: messages.slice(-10), // Last 10 messages for context
       });
-      
+
       addMessage("assistant", data.message);
     } catch (error) {
       console.error("Chat error:", error);
-      addMessage("assistant", "Sorry, I encountered an error. Please try again.");
+      addMessage(
+        "assistant",
+        "Sorry, I encountered an error. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -83,7 +133,9 @@ const ChatWidget = () => {
               messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
                   <div
                     className={`max-w-[80%] rounded-2xl px-4 py-2 ${
@@ -92,12 +144,16 @@ const ChatWidget = () => {
                         : "bg-white text-gray-800 border border-gray-200"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {msg.role === "user"
+                        ? msg.content
+                        : renderContentWithLinks(msg.content)}
+                    </p>
                   </div>
                 </div>
               ))
             )}
-            
+
             {loading && (
               <div className="flex justify-start">
                 <div className="bg-white rounded-2xl px-4 py-2 border border-gray-200">
@@ -109,7 +165,10 @@ const ChatWidget = () => {
           </div>
 
           {/* Input */}
-          <form onSubmit={handleSend} className="p-4 border-t border-gray-200 bg-white rounded-b-2xl">
+          <form
+            onSubmit={handleSend}
+            className="p-4 border-t border-gray-200 bg-white rounded-b-2xl"
+          >
             <div className="flex gap-2">
               <input
                 type="text"
@@ -135,4 +194,3 @@ const ChatWidget = () => {
 };
 
 export default ChatWidget;
-

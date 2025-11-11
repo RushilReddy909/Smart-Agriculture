@@ -269,44 +269,37 @@
         "3": "Maintain field hygiene: remove heavily infested leaves and weeds."
       }
     }
-  },
-  "PestDiagnosisPage": {
-    "navigation": {
-      "title": "Smart Agriculture",
-      "about_us": "About Us",
-      "education": "Natural Pesticides",
-      "login": "Login",
-      "signup": "Sign Up",
-      "explore_features": "Explore Features",
-      "logout": "Logout",
-      "logging": "Logging Out"
+  },"PestDiagnosisPage": {
+    "header": {
+      "badge": "AI-Powered Pest & Disease Detection",
+      "title": "Pest & Disease Diagnosis",
+      "subtitle": "Upload an image of your crop to identify diseases, pests, and get treatment recommendations using advanced AI technology."
     },
-    "pest": {
-      "badge": "AI Diagnosis",
-    "title": "Pest & Disease Diagnosis",
-    "subtitle": "Upload a crop photo to identify likely pests or diseases and see treatment suggestions.",
-    "form": {
-      "image": "Crop image",
-      "choose_file": "Choose File",
-      "change_file": "Change File",
-      "no_file_selected": "No file selected",
-      "submit": "Analyze",
-        "submitting": "Analyzing...",
-        "api_warning": "Set VITE_KINDWISE_API_KEY to enable API",
-        "errors": {
-          "image": "Please select an image.",
-          "crop": "Please choose a crop.",
-          "request": "Request failed",
-          "generic": "Something went wrong. Try again."
-        }
-      },
-      "cards": {
-        "unknown": "Unknown",
-        "no_description": "No description available.",
-        "treatment": "Suggested treatment",
-        "learn_more": "Learn more"
-      },
-      "disclaimer": "Powered by Kindwise crop.health. Always validate results with local agronomy guidance."
+    "upload_panel": {
+      "title": "Upload Image",
+      "button_identify": "Identify",
+      "button_identifying": "Identifying...",
+      "button_reset": "Reset",
+      "error_title": "Error",
+      "placeholder_title": "No image uploaded yet",
+      "placeholder_subtitle": "Upload an image on the left to get started"
+    },
+    "results": {
+      "crop_title": "Identified Crop",
+      "confidence": "Confidence",
+      "disease_title": "Identified Disease/Pest",
+      "scientific_name": "Scientific Name",
+      "details": "Details",
+      "unknown": "Unknown",
+      "no_results_title": "No identification results found",
+      "no_results_subtitle": "We couldn't identify any disease or pest in the image. Please try with a clearer image."
+    },
+    "errors": {
+      "select_image": "Please select an image first",
+      "server_config": "Server configuration error: Please check API endpoint and key configuration.",
+      "no_results": "No results found. Please try with a different image.",
+      "api_config": "API configuration error: The server returned an unexpected response. Please contact support.",
+      "generic": "Failed to identify pest. Please try again."
     }
   },
   "MarketPricePage": {

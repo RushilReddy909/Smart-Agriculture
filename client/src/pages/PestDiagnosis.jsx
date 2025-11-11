@@ -10,8 +10,12 @@ import Container from "../components/layout/Container";
 import FileInput from "../components/ui/FileInput";
 import Button from "../components/ui/Button";
 import { api } from "../utils/axiosInstances";
+import useLanguageStore from "../store/useLanguageStore";
 
 const PestDiagnosis = () => {
+  const { t } = useLanguageStore();
+  const jsonPrefix = "PestDiagnosisPage"; // Helper prefix for cleaner keys
+
   const [imageBase64, setImageBase64] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,7 +29,7 @@ const PestDiagnosis = () => {
 
   const handleIdentify = async () => {
     if (!imageBase64) {
-      setError("Please select an image first");
+      setError(t(`${jsonPrefix}.errors.select_image`));
       return;
     }
 
@@ -36,17 +40,14 @@ const PestDiagnosis = () => {
     try {
       const response = await api.post("/pest/identify", {
         images: [imageBase64],
-        top_n: 1, // Only get the most probable result
+        top_n: 1,
       });
 
-      // Check if response is HTML (API error)
       if (
         typeof response.data === "string" &&
         response.data.includes("<!DOCTYPE")
       ) {
-        setError(
-          "Server configuration error: Please check API endpoint and key configuration."
-        );
+        setError(t(`${jsonPrefix}.errors.server_config`));
         console.error(
           "Received HTML instead of JSON:",
           response.data.substring(0, 200)
@@ -55,24 +56,20 @@ const PestDiagnosis = () => {
       }
 
       if (response.data) {
-        // Log the response structure for debugging
         console.log("API Response:", response.data);
         setResult(response.data);
       } else {
-        setError("No results found. Please try with a different image.");
+        setError(t(`${jsonPrefix}.errors.no_results`));
       }
     } catch (err) {
       console.error("Pest identification error:", err);
 
-      // Check if error response is HTML
       if (
         err.response?.data &&
         typeof err.response.data === "string" &&
         err.response.data.includes("<!DOCTYPE")
       ) {
-        setError(
-          "API configuration error: The server returned an unexpected response. Please contact support."
-        );
+        setError(t(`${jsonPrefix}.errors.api_config`));
         return;
       }
 
@@ -81,7 +78,7 @@ const PestDiagnosis = () => {
         err.response?.data?.details?.error ||
         err.response?.data?.message ||
         err.message ||
-        "Failed to identify pest. Please try again.";
+        t(`${jsonPrefix}.errors.generic`);
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -97,23 +94,20 @@ const PestDiagnosis = () => {
   const renderResult = () => {
     if (!result) return null;
 
-    // Handle the actual Kindwise API response structure
     const apiResult = result.result || result;
 
-    // Get disease/pest suggestions - only show the most probable (first one)
     let suggestions = [];
     if (
       apiResult.disease?.suggestions &&
       Array.isArray(apiResult.disease.suggestions)
     ) {
-      suggestions = [apiResult.disease.suggestions[0]]; // Only first (most probable)
+      suggestions = [apiResult.disease.suggestions[0]];
     } else if (apiResult.suggestions && Array.isArray(apiResult.suggestions)) {
       suggestions = [apiResult.suggestions[0]];
     } else if (Array.isArray(apiResult)) {
       suggestions = [apiResult[0]];
     }
 
-    // Get crop suggestions
     const cropSuggestions = apiResult.crop?.suggestions || [];
     const identifiedCrop =
       cropSuggestions.length > 0 ? cropSuggestions[0] : null;
@@ -123,11 +117,12 @@ const PestDiagnosis = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
           <div className="flex items-center gap-3 text-yellow-800">
             <TbAlertTriangle size={24} />
-            <p className="font-semibold">No identification results found</p>
+            <p className="font-semibold">
+              {t(`${jsonPrefix}.results.no_results_title`)}
+            </p>
           </div>
           <p className="text-yellow-700 mt-2">
-            We couldn't identify any disease or pest in the image. Please try
-            with a clearer image.
+            {t(`${jsonPrefix}.results.no_results_subtitle`)}
           </p>
         </div>
       );
@@ -141,7 +136,7 @@ const PestDiagnosis = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-green-100 mb-1">
-                  Identified Crop
+                  {t(`${jsonPrefix}.results.crop_title`)}
                 </p>
                 <h2 className="text-2xl font-bold capitalize">
                   {identifiedCrop.name}
@@ -154,7 +149,9 @@ const PestDiagnosis = () => {
               </div>
               {identifiedCrop.probability && (
                 <div className="text-right">
-                  <p className="text-sm text-green-100">Confidence</p>
+                  <p className="text-sm text-green-100">
+                    {t(`${jsonPrefix}.results.confidence`)}
+                  </p>
                   <p className="text-3xl font-bold">
                     {(identifiedCrop.probability * 100).toFixed(0)}%
                   </p>
@@ -169,12 +166,13 @@ const PestDiagnosis = () => {
           <div className="flex items-center gap-3 mb-6">
             <TbCheck className="text-green-600" size={28} />
             <h2 className="text-2xl font-bold text-gray-900">
-              Identified Disease/Pest
+              {t(`${jsonPrefix}.results.disease_title`)}
             </h2>
           </div>
 
           {suggestions.map((suggestion, index) => {
-            const name = suggestion.name || "Unknown";
+            const name =
+              suggestion.name || t(`${jsonPrefix}.results.unknown`);
             const probability =
               suggestion.probability || suggestion.confidence || 0;
             const scientificName = suggestion.scientific_name || "";
@@ -214,7 +212,7 @@ const PestDiagnosis = () => {
                   {scientificName && scientificName === name && (
                     <div>
                       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                        Scientific Name
+                        {t(`${jsonPrefix}.results.scientific_name`)}
                       </p>
                       <p className="text-sm text-gray-700 italic">
                         {scientificName}
@@ -227,7 +225,7 @@ const PestDiagnosis = () => {
                     typeof suggestion.details === "object" && (
                       <div>
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-                          Details
+                          {t(`${jsonPrefix}.results.details`)}
                         </p>
                         <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                           {Object.keys(suggestion.details).map((detailKey) => {
@@ -268,9 +266,8 @@ const PestDiagnosis = () => {
                       </div>
                     )}
 
-                  {/* Display any other fields from the API response (excluding already shown fields) */}
+                  {/* Display any other fields from the API response */}
                   {Object.keys(suggestion).map((key) => {
-                    // Skip fields we've already displayed
                     if (
                       [
                         "name",
@@ -328,14 +325,13 @@ const PestDiagnosis = () => {
           <div className="text-center space-y-4">
             <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
               <TbMicroscope size={20} />
-              <span>AI-Powered Pest & Disease Detection</span>
+              <span>{t(`${jsonPrefix}.header.badge`)}</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
-              Pest & Disease Diagnosis
+              {t(`${jsonPrefix}.header.title`)}
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Upload an image of your crop to identify diseases, pests, and get
-              treatment recommendations using advanced AI technology.
+              {t(`${jsonPrefix}.header.subtitle`)}
             </p>
           </div>
 
@@ -345,7 +341,7 @@ const PestDiagnosis = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sticky top-4">
                 <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                  Upload Image
+                  {t(`${jsonPrefix}.upload_panel.title`)}
                 </h2>
                 <FileInput
                   onFileSelect={handleFileSelect}
@@ -364,12 +360,16 @@ const PestDiagnosis = () => {
                     {loading ? (
                       <>
                         <TbLoader className="animate-spin" size={18} />
-                        <span className="ml-2">Identifying...</span>
+                        <span className="ml-2">
+                          {t(`${jsonPrefix}.upload_panel.button_identifying`)}
+                        </span>
                       </>
                     ) : (
                       <>
                         <TbMicroscope size={18} />
-                        <span className="ml-2">Identify</span>
+                        <span className="ml-2">
+                          {t(`${jsonPrefix}.upload_panel.button_identify`)}
+                        </span>
                       </>
                     )}
                   </Button>
@@ -381,7 +381,9 @@ const PestDiagnosis = () => {
                       className="w-full"
                     >
                       <TbRefresh size={18} />
-                      <span className="ml-2">Reset</span>
+                      <span className="ml-2">
+                        {t(`${jsonPrefix}.upload_panel.button_reset`)}
+                      </span>
                     </Button>
                   )}
                 </div>
@@ -391,7 +393,9 @@ const PestDiagnosis = () => {
                   <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
                     <div className="flex items-center gap-2 text-red-800">
                       <TbAlertTriangle size={18} />
-                      <p className="font-semibold text-sm">Error</p>
+                      <p className="font-semibold text-sm">
+                        {t(`${jsonPrefix}.upload_panel.error_title`)}
+                      </p>
                     </div>
                     <p className="text-red-700 text-sm mt-1">{error}</p>
                   </div>
@@ -407,9 +411,11 @@ const PestDiagnosis = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
                   <div className="flex flex-col items-center justify-center space-y-4 text-gray-400">
                     <TbMicroscope size={64} />
-                    <p className="text-lg font-medium">No image uploaded yet</p>
+                    <p className="text-lg font-medium">
+                      {t(`${jsonPrefix}.upload_panel.placeholder_title`)}
+                    </p>
                     <p className="text-sm">
-                      Upload an image on the left to get started
+                      {t(`${jsonPrefix}.upload_panel.placeholder_subtitle`)}
                     </p>
                   </div>
                 </div>

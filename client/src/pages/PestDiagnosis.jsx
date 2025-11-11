@@ -408,8 +408,8 @@ const PestDiagnosis = () => {
               {result ? (
                 renderResult()
               ) : (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-                  <div className="flex flex-col items-center justify-center space-y-4 text-gray-400">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center h-full">
+                  <div className="flex flex-col items-center justify-center space-y-4 text-gray-400 h-full">
                     <TbMicroscope size={64} />
                     <p className="text-lg font-medium">
                       {t(`${jsonPrefix}.upload_panel.placeholder_title`)}

@@ -27,17 +27,33 @@ const SYSTEM_PROMPT = `You are an AI farming assistant for a Smart Agriculture p
 
 export const handleChatMessage = async (req, res) => {
   try {
-    const { message, history = [] } = req.body;
+    const {
+      message,
+      audio,
+      mimeType,
+      language = "en",
+      history = [],
+    } = req.body;
 
-    if (!message || typeof message !== "string") {
+    // Validate input - either text message or audio
+    if (!message && !audio) {
+      return res
+        .status(400)
+        .json({ error: "Either message or audio is required" });
+    }
+
+    if (message && typeof message !== "string") {
       return res.status(400).json({ error: "Valid message is required" });
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    // Build conversation history
+    // Build conversation history (exclude voice message indicators)
     const chatHistory = [];
     history.forEach((msg) => {
+      // Skip voice message indicators in history
+      if (msg.content === "🎤 Voice message") return;
+
       if (msg.role === "user") {
         chatHistory.push({ role: "user", parts: [{ text: msg.content }] });
       } else if (msg.role === "assistant") {
@@ -45,19 +61,54 @@ export const handleChatMessage = async (req, res) => {
       }
     });
 
-    // ✅ Corrected: systemInstruction must be an object
-    const chat = model.startChat({
-      history: chatHistory,
-      systemInstruction: {
-        role: "system",
-        parts: [{ text: SYSTEM_PROMPT }],
-      },
-    });
+    let responseText;
 
-    // Send the current message
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const responseText = response.text();
+    // Handle audio input
+    if (audio) {
+      // Convert base64 to buffer
+      const audioBuffer = Buffer.from(audio, "base64");
+
+      // Language map for better context
+      const languageNames = {
+        en: "English",
+        hi: "Hindi",
+        tel: "Telugu",
+        cha: "Chhattisgarhi",
+      };
+
+      const uiLanguage = languageNames[language] || "English";
+
+      // Create prompt for audio transcription and response
+      const audioPrompt = `The user interface language is ${uiLanguage}, but please transcribe and respond in whatever language is actually spoken in this audio clip. Maintain your role as a helpful farming assistant. Listen to the audio and provide a natural, helpful response.`;
+
+      // Send audio with system instruction
+      const result = await model.generateContent([
+        {
+          inlineData: {
+            data: audioBuffer.toString("base64"),
+            mimeType: mimeType || "audio/webm",
+          },
+        },
+        audioPrompt,
+        `System context: ${SYSTEM_PROMPT}`,
+      ]);
+
+      const response = await result.response;
+      responseText = response.text();
+    } else {
+      // Handle text message (existing logic)
+      const chat = model.startChat({
+        history: chatHistory,
+        systemInstruction: {
+          role: "system",
+          parts: [{ text: SYSTEM_PROMPT }],
+        },
+      });
+
+      const result = await chat.sendMessage(message);
+      const response = await result.response;
+      responseText = response.text();
+    }
 
     res.status(200).json({
       message: responseText,

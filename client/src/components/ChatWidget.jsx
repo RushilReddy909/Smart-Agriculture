@@ -1,8 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { TbMessageCircle, TbX, TbSend, TbLoader } from "react-icons/tb";
+import {
+  TbMessageCircle,
+  TbX,
+  TbSend,
+  TbLoader,
+  TbMicrophone,
+} from "react-icons/tb";
 import { api } from "../utils/axiosInstances";
 import useChatStore from "../store/useChatStore";
+import useLanguageStore from "../store/useLanguageStore";
 
 const renderContentWithLinks = (content) => {
   const parts = [];
@@ -47,11 +54,16 @@ const ChatWidget = () => {
     messages,
     isOpen,
     loading,
+    isRecording,
+    recordingDuration,
     openChat,
     closeChat,
     addMessage,
     setLoading,
+    startRecording,
+    stopRecording,
   } = useChatStore();
+  const { language } = useLanguageStore();
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -88,6 +100,21 @@ const ChatWidget = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleMicClick = async () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      await startRecording();
+    }
+  };
+
+  const formatRecordingTime = (seconds) => {
+    const remaining = 90 - seconds;
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -169,6 +196,14 @@ const ChatWidget = () => {
             onSubmit={handleSend}
             className="p-4 border-t border-gray-200 bg-white rounded-b-2xl"
           >
+            {isRecording && (
+              <div className="flex items-center justify-center gap-2 mb-3 text-sm text-red-600">
+                <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></div>
+                <span className="font-medium">
+                  Recording: {formatRecordingTime(recordingDuration)}
+                </span>
+              </div>
+            )}
             <div className="flex gap-2">
               <input
                 type="text"
@@ -176,15 +211,34 @@ const ChatWidget = () => {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about farming..."
                 className="flex-1 input-field text-sm"
-                disabled={loading}
+                disabled={loading || isRecording}
               />
-              <button
-                type="submit"
-                disabled={loading || !input.trim()}
-                className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <TbSend className="w-5 h-5" />
-              </button>
+
+              {!input.trim() ? (
+                <button
+                  type="button"
+                  onClick={handleMicClick}
+                  disabled={loading}
+                  className={`px-4 py-2 rounded-xl transition-colors ${
+                    isRecording
+                      ? "bg-red-600 hover:bg-red-700 text-white"
+                      : "bg-green-600 hover:bg-green-700 text-white"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  aria-label={
+                    isRecording ? "Stop recording" : "Start recording"
+                  }
+                >
+                  <TbMicrophone className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={loading || isRecording}
+                  className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <TbSend className="w-5 h-5" />
+                </button>
+              )}
             </div>
           </form>
         </div>

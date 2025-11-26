@@ -40,6 +40,13 @@ const useAuthStore = create((set) => ({
     useChatStore.getState().clearHistory();
     set({ isAuthenticated: false });
   },
+
+  // Local logout without backend call (used when tokens are already expired)
+  localLogout: () => {
+    localStorage.removeItem("token");
+    useChatStore.getState().clearHistory();
+    set({ isAuthenticated: false });
+  },
 }));
 
 export default useAuthStore;

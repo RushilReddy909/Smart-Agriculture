@@ -3,6 +3,12 @@ import en from "../locales/en.json";
 import hi from "../locales/hi.json";
 import chatt from "../locales/chatt.json";
 import tel from "../locales/tel.json";
+import ben from "../locales/ben.json";
+import tam from "../locales/tam.json";
+import mar from "../locales/mar.json";
+import guj from "../locales/guj.json";
+import kan from "../locales/kan.json";
+import pun from "../locales/pun.json";
 
 const LANG_STORAGE_KEY = "appLang";
 
@@ -11,6 +17,12 @@ const locales = {
   HI: hi,
   TEL: tel,
   CHA: chatt,
+  BEN: ben,
+  TAM: tam,
+  MAR: mar,
+  GUJ: guj,
+  KAN: kan,
+  PUN: pun,
 };
 
 const getInitialLang = () => {

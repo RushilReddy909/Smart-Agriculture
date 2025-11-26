@@ -93,10 +93,13 @@ const ChatWidget = () => {
       addMessage("assistant", data.message);
     } catch (error) {
       console.error("Chat error:", error);
-      addMessage(
-        "assistant",
-        "Sorry, I encountered an error. Please try again."
-      );
+
+      // Show backend error message if available
+      const errorMessage =
+        error.response?.data?.error ||
+        "Sorry, I encountered an error. Please try again in a moment.";
+
+      addMessage("assistant", errorMessage);
     } finally {
       setLoading(false);
     }

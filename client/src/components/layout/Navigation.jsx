@@ -107,7 +107,7 @@ const Navigation = () => {
                 <TbChevronDown className="w-4 h-4 ml-1 text-gray-600" />
               </button>
               {isLangOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-20">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-20 max-h-80 overflow-y-auto">
                   <button
                     onClick={() => handleLanguageSelect("EN")}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -131,6 +131,42 @@ const Navigation = () => {
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     छत्तीसगढ़ी (Chhattisgarhi)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("BEN")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    বাংলা (Bengali)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("TAM")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    தமிழ் (Tamil)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("MAR")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    मराठी (Marathi)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("GUJ")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    ગુજરાતી (Gujarati)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("KAN")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    ಕನ್ನಡ (Kannada)
+                  </button>
+                  <button
+                    onClick={() => handleLanguageSelect("PUN")}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    ਪੰਜਾਬੀ (Punjabi)
                   </button>
                 </div>
               )}

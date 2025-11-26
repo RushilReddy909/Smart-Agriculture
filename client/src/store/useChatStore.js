@@ -170,10 +170,13 @@ const useChatStore = create((set, get) => ({
             resolve();
           } catch (error) {
             console.error("Voice message error:", error);
-            state.addMessage(
-              "assistant",
-              "Sorry, I couldn't process your voice message. Please try again."
-            );
+
+            // Show backend error message if available
+            const errorMessage =
+              error.response?.data?.error ||
+              "Sorry, I couldn't process your voice message. Please try again in a moment.";
+
+            state.addMessage("assistant", errorMessage);
             reject(error);
           } finally {
             set({ loading: false });

@@ -22,7 +22,8 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    // Handle 401 errors (expired access token)
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // prevent infinite loop
 
       try {
@@ -33,16 +34,18 @@ api.interceptors.response.use(
           { withCredentials: true }
         );
 
-        // Update access token in localStorage (or memory)
+        // Update access token in localStorage
         const newAccessToken = refreshRes.data.accessToken;
         localStorage.setItem("token", newAccessToken);
 
         // Retry original request with new token
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
-      } catch (err) {
-        useAuthStore.getState().logout();
-        return Promise.reject(err);
+      } catch (refreshError) {
+        // Refresh token also expired or invalid
+        // Use localLogout to avoid calling backend with invalid tokens
+        useAuthStore.getState().localLogout();
+        return Promise.reject(refreshError);
       }
     }
 

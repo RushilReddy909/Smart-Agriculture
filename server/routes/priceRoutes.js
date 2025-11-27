@@ -1,9 +1,17 @@
-// routes/priceRoutes.js
 import express from "express";
-import { predictPrice } from "../controllers/priceController.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
+import {
+  getMandiPrices,
+  searchCommodities,
+  getStates,
+  getPriceTrend,
+} from "../controllers/priceController.js";
 
 const router = express.Router();
 
-router.post("/predict", predictPrice);
+router.get("/mandi", verifyToken, getMandiPrices);
+router.get("/commodities", verifyToken, searchCommodities);
+router.get("/states", verifyToken, getStates);
+router.get("/trend", verifyToken, getPriceTrend);
 
 export default router;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
@@ -8,6 +8,7 @@ import Container from "../components/layout/Container";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import LocationSelector from "../components/ui/LocationSelector";
 import { TbPlant, TbReportAnalytics } from "react-icons/tb";
 import useLanguageStore from "../store/useLanguageStore";
 
@@ -80,6 +81,7 @@ const AICropSuggestion = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -166,7 +168,9 @@ const AICropSuggestion = () => {
                   error={errors.nitrogen?.message}
                   type="number"
                   step="any"
-                  placeholder={t("CropPredictionPage.crop_ai.form.nitrogen_placeholder")}
+                  placeholder={t(
+                    "CropPredictionPage.crop_ai.form.nitrogen_placeholder"
+                  )}
                 />
                 <Input
                   label="Phosphorous"
@@ -174,7 +178,9 @@ const AICropSuggestion = () => {
                   error={errors.phosphorous?.message}
                   type="number"
                   step="any"
-                  placeholder={t("CropPredictionPage.crop_ai.form.phosphorous_placeholder")}
+                  placeholder={t(
+                    "CropPredictionPage.crop_ai.form.phosphorous_placeholder"
+                  )}
                 />
                 <Input
                   label="Potassium"
@@ -182,7 +188,9 @@ const AICropSuggestion = () => {
                   error={errors.potassium?.message}
                   type="number"
                   step="any"
-                  placeholder={t("CropPredictionPage.crop_ai.form.potassium_placeholder")}
+                  placeholder={t(
+                    "CropPredictionPage.crop_ai.form.potassium_placeholder"
+                  )}
                 />
               </div>
               <Input
@@ -191,25 +199,46 @@ const AICropSuggestion = () => {
                 error={errors.ph?.message}
                 type="number"
                 step="0.1"
-                placeholder={t("CropPredictionPage.crop_ai.form.ph_placeholder")}
+                placeholder={t(
+                  "CropPredictionPage.crop_ai.form.ph_placeholder"
+                )}
               />
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <Input
-                  label="State"
-                  {...register("state")}
-                  error={errors.state?.message}
-                  type="text"
-                  placeholder={t("CropPredictionPage.crop_ai.form.state_placeholder")}
-                />
-                <Input
-                  label="District"
-                  {...register("district")}
-                  error={errors.district?.message}
-                  type="text"
-                  placeholder={t("CropPredictionPage.crop_ai.form.district_placeholder")}
-                />
-              </div>
+              <Controller
+                name="state"
+                control={control}
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <Controller
+                    name="district"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                      field: {
+                        onChange: onDistrictChange,
+                        value: districtValue,
+                      },
+                    }) => (
+                      <LocationSelector
+                        state={value}
+                        district={districtValue}
+                        onStateChange={(e) => onChange(e.target.value)}
+                        onDistrictChange={(e) =>
+                          onDistrictChange(e.target.value)
+                        }
+                        stateLabel="State"
+                        districtLabel="District"
+                        stateRequired={true}
+                        districtRequired={true}
+                        stateError={errors.state?.message}
+                        districtError={errors.district?.message}
+                        statePlaceholder="Select State"
+                        districtPlaceholder="Select District"
+                      />
+                    )}
+                  />
+                )}
+              />
 
               <Select
                 label="Month"
@@ -229,7 +258,9 @@ const AICropSuggestion = () => {
                 className="w-full !mt-8"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? t("CropPredictionPage.crop_ai.form.submitting") : t("CropPredictionPage.crop_ai.form.submit")}
+                {isSubmitting
+                  ? t("CropPredictionPage.crop_ai.form.submitting")
+                  : t("CropPredictionPage.crop_ai.form.submit")}
               </Button>
             </form>
           </Card>
@@ -292,7 +323,9 @@ const AICropSuggestion = () => {
                 </div>
               ) : apiError ? (
                 <div className="text-red-600">
-                  <h3 className="font-semibold mb-2">{t("CropPredictionPage.crop_ai.results.error_title")}</h3>
+                  <h3 className="font-semibold mb-2">
+                    {t("CropPredictionPage.crop_ai.results.error_title")}
+                  </h3>
                   <p className="text-sm">{apiError}</p>
                 </div>
               ) : (

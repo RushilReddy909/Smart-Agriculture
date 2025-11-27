@@ -52,30 +52,37 @@ const months = [
 const AICropSuggestion = () => {
   const [prediction, setPrediction] = useState("");
   const [apiError, setApiError] = useState("");
-  const [imageURL, setImageURL] = useState("");
+  const [imageURLs, setImageURLs] = useState([]);
   const { t } = useLanguageStore();
 
   useEffect(() => {
     if (!prediction) return;
 
-    const fetchImage = async () => {
+    const fetchImages = async () => {
       try {
         const res = await axios.get(`https://api.unsplash.com/search/photos`, {
           params: {
-            query: prediction,
+            query: `${prediction} crop farming`,
             client_id: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
-            per_page: 1,
+            per_page: 3,
           },
         });
 
         if (res.data.results.length > 0) {
-          setImageURL(res.data.results[0].urls.small);
+          const urls = res.data.results.map((img) => ({
+            small: img.urls.small,
+            regular: img.urls.regular,
+            alt: img.alt_description || prediction,
+            photographer: img.user.name,
+            photographerUrl: img.user.links.html,
+          }));
+          setImageURLs(urls);
         }
       } catch (err) {
-        console.error("Error fetching image:", err);
+        console.error("Error fetching images:", err);
       }
     };
-    fetchImage();
+    fetchImages();
   }, [prediction]);
 
   const {
@@ -311,13 +318,37 @@ const AICropSuggestion = () => {
                       {prediction}
                     </h2>
                   </div>
-                  {imageURL && (
-                    <div className="mt-4 flex justify-center">
-                      <img
-                        src={imageURL}
-                        alt={prediction}
-                        className="rounded-xl shadow-lg max-h-48 object-cover"
-                      />
+                  {imageURLs.length > 0 && (
+                    <div className="mt-6">
+                      <p className="text-sm text-gray-500 mb-3 text-center">
+                        {t(
+                          "CropPredictionPage.crop_ai.results.reference_images"
+                        )}
+                      </p>
+                      <div className="grid grid-cols-3 gap-3">
+                        {imageURLs.map((img, idx) => (
+                          <div key={idx} className="relative group">
+                            <img
+                              src={img.small}
+                              alt={img.alt}
+                              className="rounded-lg shadow-md w-full h-32 object-cover transition-transform group-hover:scale-105"
+                            />
+                            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs p-1 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                              <a
+                                href={img.photographerUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                              >
+                                {t(
+                                  "CropPredictionPage.crop_ai.results.photographer_credit"
+                                )}{" "}
+                                {img.photographer}
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

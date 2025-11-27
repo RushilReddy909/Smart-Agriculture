@@ -105,8 +105,10 @@ const PriceTable = ({ data, t }) => {
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4 px-2">
           <p className="text-gray-600 text-sm">
-            Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of{" "}
-            {data.length} results
+            {t("MarketPricePage.market_price.pagination.showing")}{" "}
+            {startIndex + 1}-{Math.min(endIndex, data.length)}{" "}
+            {t("MarketPricePage.market_price.pagination.of")} {data.length}{" "}
+            {t("MarketPricePage.market_price.pagination.results")}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -115,7 +117,7 @@ const PriceTable = ({ data, t }) => {
               className="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
             >
               <FaChevronLeft size={12} />
-              Prev
+              {t("MarketPricePage.market_price.pagination.prev")}
             </button>
 
             <div className="flex items-center gap-1">
@@ -145,7 +147,7 @@ const PriceTable = ({ data, t }) => {
               disabled={currentPage === totalPages}
               className="px-3 py-1 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
             >
-              Next
+              {t("MarketPricePage.market_price.pagination.next")}
               <FaChevronRight size={12} />
             </button>
           </div>

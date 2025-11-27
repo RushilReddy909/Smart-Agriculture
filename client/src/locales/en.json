@@ -342,6 +342,13 @@
         "1": "Track price spikes and plan logistics before peak days.",
         "2": "Consider storage costs vs. potential gains from waiting.",
         "3": "Diversify markets: compare nearby mandis for better rates."
+      },
+      "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "results": "results",
+        "prev": "Prev",
+        "next": "Next"
       }
     }
   },
@@ -382,7 +389,9 @@
         "loading": "Our AI is analyzing your data...",
         "recommendation": "Our AI recommends you plant:",
         "empty": "Your personalized crop recommendation will appear here.",
-        "error_title": "An Error Occurred"
+        "error_title": "An Error Occurred",
+        "reference_images": "Reference images:",
+        "photographer_credit": "by"
       },
       "validation": {
         "nitrogen_required": "Nitrogen is required",

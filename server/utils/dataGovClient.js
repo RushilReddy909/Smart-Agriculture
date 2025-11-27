@@ -1,59 +1,83 @@
 const DATA_GOV_BASE_URL = "https://api.data.gov.in/resource";
-
-// Use working resource ID
-const RESOURCE_ID = "35985678-0d79-46b4-9ed6-6f13308a1d24";
+const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
 
 export async function fetchMandiPrices(filters = {}, options = {}) {
   const apiKey = process.env.DATA_GOV_API_KEY;
+  if (!apiKey) throw new Error("DATA_GOV_API_KEY not configured");
 
-  if (!apiKey) {
-    throw new Error("DATA_GOV_API_KEY not configured");
-  }
+  const { limit = 100, offset = 0 } = options;
 
   const params = new URLSearchParams({
     "api-key": apiKey,
     format: "json",
-    limit: String(options.limit || 50),
-    offset: String(options.offset || 0),
+    limit: String(limit),
+    offset: String(offset),
   });
 
-  // Add filters - API requires Title Case field names
-  if (filters.state) params.append("filters[State]", filters.state);
-  if (filters.district) params.append("filters[District]", filters.district);
-  if (filters.market) params.append("filters[Market]", filters.market);
-  if (filters.commodity) params.append("filters[Commodity]", filters.commodity);
+  /*
+    ✅ CORRECT FILTER KEYS for this resource
+    (data.gov.in uses lowercase + .keyword sometimes)
+
+    State        -> filters[state.keyword]
+    District     -> filters[district]
+    Market       -> filters[market]
+    Commodity    -> filters[commodity]
+    Variety      -> filters[variety]
+    Arrival_Date -> filters[arrival_date]
+  */
+
+  if (filters.state) params.append("filters[state.keyword]", filters.state);
+  if (filters.district) params.append("filters[district]", filters.district);
+  if (filters.market) params.append("filters[market]", filters.market);
+  if (filters.commodity) params.append("filters[commodity]", filters.commodity);
+  if (filters.variety) params.append("filters[variety]", filters.variety);
   if (filters.arrival_date)
-    params.append("filters[Arrival_Date]", filters.arrival_date);
+    params.append("filters[arrival_date]", filters.arrival_date);
 
   const url = `${DATA_GOV_BASE_URL}/${RESOURCE_ID}?${params.toString()}`;
+  console.log("📡 Fetching mandi prices from data.gov.in");
+  console.log("🔍 Filters:", filters);
+  console.log("🌐 URL:", url);
+
   const response = await fetch(url);
 
   if (!response.ok) {
+    const text = await response.text();
     throw new Error(
-      `data.gov.in API error: ${response.status} ${response.statusText}`
+      `data.gov.in API error: ${response.status} ${response.statusText} - ${text}`
     );
   }
 
   const data = await response.json();
-  return data;
+
+  console.log(
+    "✅ API Response - Total:",
+    data.total,
+    "Count:",
+    data.count,
+    "Records:",
+    data.records?.length || 0
+  );
+
+  return {
+    total: data.total || 0,
+    count: data.count || (data.records?.length ?? 0),
+    records: data.records || [],
+  };
 }
 
-export function parseMandiRecords(records) {
-  return records.map((record) => ({
-    state: record.State || record.state,
-    district: record.District || record.district,
-    market: record.Market || record.market,
-    commodity: record.Commodity || record.commodity,
-    variety: record.Variety || record.variety,
-    arrivalDate: record.Arrival_Date || record.arrival_date || record.date,
-    minPrice:
-      parseFloat(record.Min_Price || record.min_price || record.minPrice) || 0,
-    maxPrice:
-      parseFloat(record.Max_Price || record.max_price || record.maxPrice) || 0,
-    modalPrice:
-      parseFloat(
-        record.Modal_Price || record.modal_price || record.modalPrice
-      ) || 0,
+export function parseMandiRecords(records = []) {
+  return records.map((r) => ({
+    state: r.State || r.state || null,
+    district: r.District || r.district || null,
+    market: r.Market || r.market || null,
+    commodity: r.Commodity || r.commodity || null,
+    variety: r.Variety || r.variety || null,
+    arrivalDate: r.Arrival_Date || r.arrival_date || null,
+
+    minPrice: Number(r.Min_Price ?? r.min_price ?? r.minPrice ?? 0),
+    maxPrice: Number(r.Max_Price ?? r.max_price ?? r.maxPrice ?? 0),
+    modalPrice: Number(r.Modal_Price ?? r.modal_price ?? r.modalPrice ?? 0),
   }));
 }
 

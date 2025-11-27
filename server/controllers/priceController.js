@@ -22,17 +22,48 @@ export const getMandiPrices = async (req, res) => {
     if (commodity) filters.commodity = commodity;
     if (date) filters.arrival_date = date;
 
-    let data,
-      records,
-      isMockData = false;
+    let records,
+      isMockData = false,
+      broaderSearch = false;
 
     try {
-      data = await fetchMandiPrices(filters, { limit: 100 });
-      records = parseMandiRecords(data.records || data.data || []);
+      const data = await fetchMandiPrices(filters, { limit: 100 });
+      records = parseMandiRecords(data.records || []);
 
-      // If API returns no records, fallback to mock data
+      // If no records with state+district, try with just state or just commodity
+      if (records.length === 0 && district) {
+        console.log("⚠️ No records with district filter, trying state only");
+        const broaderFilters = { ...filters };
+        delete broaderFilters.district;
+
+        const broaderData = await fetchMandiPrices(broaderFilters, {
+          limit: 100,
+        });
+        records = parseMandiRecords(broaderData.records || []);
+        broaderSearch = records.length > 0;
+      }
+
+      // If still no records, try with just commodity
+      if (records.length === 0 && (state || district)) {
+        console.log(
+          "⚠️ No records with location filters, trying commodity only"
+        );
+        const commodityOnly = {};
+        if (commodity) commodityOnly.commodity = commodity;
+        if (date) commodityOnly.arrival_date = date;
+
+        if (Object.keys(commodityOnly).length > 0) {
+          const commodityData = await fetchMandiPrices(commodityOnly, {
+            limit: 100,
+          });
+          records = parseMandiRecords(commodityData.records || []);
+          broaderSearch = records.length > 0;
+        }
+      }
+
+      // If still no records, use mock data
       if (records.length === 0) {
-        console.log("⚠️ No records from API, using mock data");
+        console.log("⚠️ No records from any API query, using mock data");
         const mockData = getMockMandiData(filters);
         records = parseMandiRecords(mockData.records);
         isMockData = true;
@@ -53,8 +84,11 @@ export const getMandiPrices = async (req, res) => {
       records,
       filters,
       isMockData,
+      broaderSearch,
       message: isMockData
         ? "Showing sample data. Live API data is currently unavailable."
+        : broaderSearch
+        ? "Showing results from a broader search area as no exact matches were found."
         : undefined,
     };
 

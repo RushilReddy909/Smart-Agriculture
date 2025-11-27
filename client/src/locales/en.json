@@ -178,7 +178,7 @@
         },
         "6": {
           "title": "Weather Prediction",
-          "description": "Get a 7-day weather forecast for your location to help you plan farming activities."
+          "description": "Get a 5-day weather forecast for your location to help you plan farming activities."
         }
       }
     }

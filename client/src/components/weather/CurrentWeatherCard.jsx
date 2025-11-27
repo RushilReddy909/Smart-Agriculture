@@ -6,6 +6,10 @@ import { getWeatherIcon } from "../../utils/weatherHelpers";
 const CurrentWeatherCard = ({ weatherData, city, t }) => {
   if (!weatherData) return null;
 
+  const { icon: WeatherIcon, color } = getWeatherIcon(
+    weatherData.current.weather?.[0]?.description
+  );
+
   return (
     <>
       <div className="text-center mb-12">
@@ -19,7 +23,7 @@ const CurrentWeatherCard = ({ weatherData, city, t }) => {
         className="max-w-2xl mx-auto mb-12 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left"
       >
         <div className="flex items-center gap-6 mb-6 sm:mb-0">
-          {getWeatherIcon(weatherData.current.weather?.[0]?.description)}
+          <WeatherIcon className={color} size={48} />
           <div>
             <p className="text-5xl font-bold text-gray-800">
               {Math.round(weatherData.current.temp)}°C

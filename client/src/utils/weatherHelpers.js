@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FaSun,
   FaCloud,
@@ -8,17 +7,15 @@ import {
 } from "react-icons/fa";
 
 export const getWeatherIcon = (description) => {
-  if (!description) return <FaCloudSun className="text-gray-500" size={48} />;
+  if (!description) return { icon: FaCloudSun, color: "text-gray-500" };
   const desc = description.toLowerCase();
   if (desc.includes("rain"))
-    return <FaCloudRain className="text-blue-500" size={48} />;
-  if (desc.includes("cloud"))
-    return <FaCloud className="text-gray-400" size={48} />;
+    return { icon: FaCloudRain, color: "text-blue-500" };
+  if (desc.includes("cloud")) return { icon: FaCloud, color: "text-gray-400" };
   if (desc.includes("snow"))
-    return <FaSnowflake className="text-blue-200" size={48} />;
-  if (desc.includes("clear"))
-    return <FaSun className="text-yellow-500" size={48} />;
-  return <FaCloudSun className="text-gray-500" size={48} />;
+    return { icon: FaSnowflake, color: "text-blue-200" };
+  if (desc.includes("clear")) return { icon: FaSun, color: "text-yellow-500" };
+  return { icon: FaCloudSun, color: "text-gray-500" };
 };
 
 export const formatDate = (timestamp) => {

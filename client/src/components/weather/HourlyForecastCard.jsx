@@ -20,6 +20,10 @@ const HourlyForecastCard = ({ hourlyData, t }) => {
               hour12: true,
             });
 
+            const { icon: WeatherIcon, color } = getWeatherIcon(
+              hour.weather?.[0]?.description
+            );
+
             return (
               <div
                 key={idx}
@@ -29,7 +33,7 @@ const HourlyForecastCard = ({ hourlyData, t }) => {
                   {timeStr}
                 </span>
                 <div className="my-2">
-                  {getWeatherIcon(hour.weather?.[0]?.description)}
+                  <WeatherIcon className={color} size={32} />
                 </div>
                 <span className="text-xl font-bold text-gray-900">
                   {Math.round(hour.temp)}°C

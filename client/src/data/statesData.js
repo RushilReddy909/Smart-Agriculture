@@ -915,6 +915,10 @@ export const statesData = [
     districts: ["Karaikal", "Mahe", "Puducherry", "Yanam"],
   },
 ];
+statesData.forEach((state) => {
+  state.districts.sort((a, b) => a.localeCompare(b));
+});
+statesData.sort((a, b) => a.name.localeCompare(b.name));
 
 // Helper function to get all state names
 export const getStateNames = () => statesData.map((state) => state.name);

@@ -8,11 +8,6 @@ import { MdAgriculture } from 'react-icons/md';
 import { FaCloudSun } from 'react-icons/fa';
 import useLanguageStore from '../store/useLanguageStore';
 
-// ---------------------------------------------------------------------------
-// CHANGE 1:
-// This list now only contains static data and a "jsonKey"
-// to look up the text. The hard-coded English text is removed.
-// ---------------------------------------------------------------------------
 const featuresList = [
   {
     jsonKey: '1', // Matches '1' in your JSON items
@@ -95,16 +90,10 @@ const Features = () => {
                   <div className={feature.color}>{feature.icon}</div>
                 </div>
                 
-                {/* ---------------------------------------------------- */}
-                {/* CHANGE 2: Use the t() function to get the title      */}
-                {/* ---------------------------------------------------- */}
                 <h3 className="heading-tertiary text-gray-900 mb-4 flex-grow">
                   {t(`FeaturesPage.features.items.${feature.jsonKey}.title`)}
                 </h3>
 
-                {/* ---------------------------------------------------- */}
-                {/* CHANGE 3: Use the t() function to get the description */}
-                {/* ---------------------------------------------------- */}
                 <p className="text-body text-gray-600">
                   {t(
                     `FeaturesPage.features.items.${feature.jsonKey}.description`

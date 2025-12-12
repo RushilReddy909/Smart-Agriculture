@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  node_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node_server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PYTHON_API_URL=http://python_api:8000
+    env_file:
+      - .env
+    depends_on:
+      - python_api
+    restart: unless-stopped
+
+  python_api:
+    build:
+      context: ./prediction_api
+      dockerfile: Dockerfile
+    container_name: python_api
+    expose:
+      - "8000"
+    restart: unless-stopped

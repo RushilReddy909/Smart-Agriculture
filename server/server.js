@@ -9,6 +9,7 @@ import weatherRoutes from "./routes/weatherRoutes.js";
 import pestRoutes from "./routes/pestRoutes.js";
 import priceRoutes from "./routes/priceRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import predictionRoutes from "./routes/predictionRoutes.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -34,6 +35,7 @@ app.use("/api/weather", weatherRoutes);
 app.use("/api/pest", pestRoutes);
 app.use("/api/price", priceRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/predict", predictionRoutes);
 
 if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "..", "client", "dist");

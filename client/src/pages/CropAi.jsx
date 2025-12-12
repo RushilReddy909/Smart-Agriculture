@@ -108,8 +108,8 @@ const AICropSuggestion = () => {
     };
 
     try {
-      // The path "/predict" assumes you have a proxy setup in package.json
-      const response = await axios.post("/predict", body);
+      // Send request to Node backend which proxies to Python API
+      const response = await axios.post("/api/predict/crop", body);
 
       if (response.data && response.data.result) {
         setPrediction(response.data.result);

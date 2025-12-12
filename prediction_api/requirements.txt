@@ -3,7 +3,7 @@ fastapi
 uvicorn
 pydantic
 python-multipart
-dotenv
+python-dotenv
 
 # Machine Learning & Data Handling
 torch --index-url https://download.pytorch.org/whl/cpu

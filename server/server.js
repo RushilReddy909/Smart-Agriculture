@@ -1,7 +1,7 @@
-import dotenv from "dotenv";
 import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
+import "./config/loadEnv.js";
 import connectDB from "./config/connectDB.js";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -15,8 +15,6 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -40,7 +38,7 @@ app.use("/api/chat", chatRoutes);
 if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "..", "client", "dist");
   app.use(express.static(buildPath));
-  
+
   app.get("/{*any}", (req, res) => {
     res.sendFile(buildPath, "index.html");
   });

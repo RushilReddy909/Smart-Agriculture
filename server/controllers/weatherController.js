@@ -4,6 +4,11 @@ import {
   findSprayWindows,
 } from "../utils/weatherAdvisories.js";
 import { getCached, setCache } from "../utils/cacheHelper.js";
+import {
+  buildLocationKey,
+  normalizeLatLon,
+  normalizeLocationPart,
+} from "../utils/keyHelpers.js";
 
 export const getWeatherForecast = async (req, res) => {
   try {
@@ -15,8 +20,13 @@ export const getWeatherForecast = async (req, res) => {
         .json({ error: "Latitude and longitude are required" });
     }
 
+    const locKey = buildLocationKey({
+      lat: normalizeLatLon(lat),
+      lon: normalizeLatLon(lon),
+    });
+
     const API_KEY = process.env.OPENWEATHER_API_KEY;
-    const cacheKey = `weather:${lat}:${lon}`;
+    const cacheKey = `weather:${locKey}`;
     const cached = await getCached(cacheKey);
 
     if (cached) {
@@ -125,7 +135,11 @@ export const getFarmAdvisories = async (req, res) => {
         .json({ error: "Latitude and longitude are required" });
     }
 
-    const cacheKey = `advisories:${lat}:${lon}`;
+    const locKey = buildLocationKey({
+      lat: normalizeLatLon(lat),
+      lon: normalizeLatLon(lon),
+    });
+    const cacheKey = `advisories:${locKey}`;
     const cached = await getCached(cacheKey);
 
     if (cached) {
@@ -187,7 +201,11 @@ export const getSprayWindows = async (req, res) => {
         .json({ error: "Latitude and longitude are required" });
     }
 
-    const cacheKey = `spray:${lat}:${lon}`;
+    const locKey = buildLocationKey({
+      lat: normalizeLatLon(lat),
+      lon: normalizeLatLon(lon),
+    });
+    const cacheKey = `spray:${locKey}`;
     const cached = await getCached(cacheKey);
 
     if (cached) {
@@ -235,6 +253,14 @@ export const searchLocation = async (req, res) => {
       return res.status(400).json({ error: "Search query is required" });
     }
 
+    const normalizedQuery = normalizeLocationPart(query);
+    const cacheKey = `geo:${normalizedQuery}`;
+    const cached = await getCached(cacheKey);
+
+    if (cached) {
+      return res.json(cached);
+    }
+
     const API_KEY = process.env.OPENWEATHER_API_KEY;
     const url = `http://api.openweathermap.org/geo/1.0/direct`;
 
@@ -254,7 +280,9 @@ export const searchLocation = async (req, res) => {
       lon: loc.lon,
     }));
 
-    res.json({ success: true, data: locations });
+    const resp = { success: true, data: locations };
+    await setCache(cacheKey, resp, 86400); // cache geocoding for 24h
+    res.json(resp);
   } catch (error) {
     console.error("❌ Error searching location:", error);
     res.status(500).json({ error: "Failed to search location" });

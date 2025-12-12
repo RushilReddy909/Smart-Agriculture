@@ -4,12 +4,24 @@ import {
   getMockMandiData,
 } from "../utils/dataGovClient.js";
 import { getCached, setCache } from "../utils/cacheHelper.js";
+import {
+  buildMandiKey,
+  buildTrendKey,
+  normalizeCommodity,
+  normalizeDate,
+  normalizeLocationPart,
+} from "../utils/keyHelpers.js";
 
 export const getMandiPrices = async (req, res) => {
   try {
     const { state, district, commodity, date } = req.query;
 
-    const cacheKey = `mandi:${state}:${district}:${commodity}:${date}`;
+    const cacheKey = `mandi:${buildMandiKey({
+      state,
+      district,
+      commodity,
+      date,
+    })}`;
     const cached = await getCached(cacheKey);
 
     if (cached) {
@@ -17,10 +29,10 @@ export const getMandiPrices = async (req, res) => {
     }
 
     const filters = {};
-    if (state) filters.state = state;
-    if (district) filters.district = district;
-    if (commodity) filters.commodity = commodity;
-    if (date) filters.arrival_date = date;
+    if (state) filters.state = state.trim();
+    if (district) filters.district = district.trim();
+    if (commodity) filters.commodity = commodity.trim();
+    if (date) filters.arrival_date = date.trim();
 
     let records,
       isMockData = false,
@@ -185,7 +197,12 @@ export const getPriceTrend = async (req, res) => {
       return res.status(400).json({ error: "Commodity is required" });
     }
 
-    const cacheKey = `trend:${state}:${district}:${commodity}:${days}`;
+    const cacheKey = `trend:${buildTrendKey({
+      state,
+      district,
+      commodity,
+      days,
+    })}`;
     const cached = await getCached(cacheKey);
 
     if (cached) {

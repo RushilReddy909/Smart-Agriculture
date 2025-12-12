@@ -7,6 +7,7 @@ import {
   refreshUserToken,
   registerUser,
 } from "../controllers/authController.js";
+import { authRateLimiter } from "../middlewares/rateLimiter.js";
 
 const registerValidation = [
   body("username")
@@ -61,11 +62,11 @@ const loginValidation = [
 
 const router = express.Router();
 
-router.post("/login", loginValidation, loginUser);
+router.post("/login", authRateLimiter, loginValidation, loginUser);
 
-router.post("/register", registerValidation, registerUser);
+router.post("/register", authRateLimiter, registerValidation, registerUser);
 
-router.post("/refresh", refreshUserToken);
+router.post("/refresh", authRateLimiter, refreshUserToken);
 
 router.post("/logout", verifyToken, logoutUser);
 

@@ -6,7 +6,7 @@ python-multipart
 dotenv
 
 # Machine Learning & Data Handling
-torch
+torch --index-url https://download.pytorch.org/whl/cpu
 numpy
 pandas
 scikit-learn

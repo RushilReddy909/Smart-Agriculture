@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 
 # Load the .env file from the parent directory
-load_dotenv(dotenv_path='../.env')
+load_dotenv(dotenv_path='./.env')
 
 def get_weather_data(state, district):
     """

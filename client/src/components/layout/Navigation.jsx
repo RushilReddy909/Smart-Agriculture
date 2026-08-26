@@ -5,6 +5,7 @@ import { TbMenuDeep, TbChevronDown } from "react-icons/tb";
 import { MdAgriculture, MdLogout } from "react-icons/md";
 import useAuthStore from "../../store/useAuthStore";
 import useLanguageStore from "../../store/useLanguageStore";
+import { notifySuccess, notifyError } from "../../utils/toast";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -57,8 +58,10 @@ const Navigation = () => {
     try {
       setLoading(true);
       await logout();
+      notifySuccess("Logged out successfully.");
     } catch (err) {
       console.error("Logout failed:", err);
+      notifyError("Logout failed. Please try again.");
     } finally {
       setLoading(false);
     }

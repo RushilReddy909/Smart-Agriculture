@@ -41,7 +41,9 @@ const Select = ({
         `}
         {...props}
       >
-        <option value="" disabled>
+        {/* Only lock the placeholder when the field is required, so optional
+            fields can be cleared back to "none selected". */}
+        <option value="" disabled={required}>
           {placeholder}
         </option>
         {options.map((option, index) => (

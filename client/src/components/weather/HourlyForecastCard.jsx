@@ -9,7 +9,7 @@ const HourlyForecastCard = ({ hourlyData, t }) => {
   return (
     <Card className="mb-8 p-6">
       <h3 className="text-2xl font-bold text-gray-800 mb-4">
-        24-Hour Forecast
+        {t("WeatherPredictionPage.weather.forecast.hourly_title")}
       </h3>
       <div className="overflow-x-auto">
         <div className="flex gap-4 pb-4" style={{ minWidth: "max-content" }}>

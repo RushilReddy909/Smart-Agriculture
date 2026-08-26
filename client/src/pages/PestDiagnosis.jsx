@@ -10,6 +10,7 @@ import Container from "../components/layout/Container";
 import FileInput from "../components/ui/FileInput";
 import Button from "../components/ui/Button";
 import { api } from "../utils/axiosInstances";
+import { notifySuccess, notifyError } from "../utils/toast";
 import useLanguageStore from "../store/useLanguageStore";
 
 const PestDiagnosis = () => {
@@ -29,7 +30,9 @@ const PestDiagnosis = () => {
 
   const handleIdentify = async () => {
     if (!imageBase64) {
-      setError(t(`${jsonPrefix}.errors.select_image`));
+      const msg = t(`${jsonPrefix}.errors.select_image`);
+      setError(msg);
+      notifyError(msg);
       return;
     }
 
@@ -47,7 +50,9 @@ const PestDiagnosis = () => {
         typeof response.data === "string" &&
         response.data.includes("<!DOCTYPE")
       ) {
-        setError(t(`${jsonPrefix}.errors.server_config`));
+        const msg = t(`${jsonPrefix}.errors.server_config`);
+        setError(msg);
+        notifyError(msg);
         console.error(
           "Received HTML instead of JSON:",
           response.data.substring(0, 200)
@@ -58,8 +63,11 @@ const PestDiagnosis = () => {
       if (response.data) {
         console.log("API Response:", response.data);
         setResult(response.data);
+        notifySuccess("Identification complete!");
       } else {
-        setError(t(`${jsonPrefix}.errors.no_results`));
+        const msg = t(`${jsonPrefix}.errors.no_results`);
+        setError(msg);
+        notifyError(msg);
       }
     } catch (err) {
       console.error("Pest identification error:", err);
@@ -69,7 +77,9 @@ const PestDiagnosis = () => {
         typeof err.response.data === "string" &&
         err.response.data.includes("<!DOCTYPE")
       ) {
-        setError(t(`${jsonPrefix}.errors.api_config`));
+        const msg = t(`${jsonPrefix}.errors.api_config`);
+        setError(msg);
+        notifyError(msg);
         return;
       }
 
@@ -80,6 +90,7 @@ const PestDiagnosis = () => {
         err.message ||
         t(`${jsonPrefix}.errors.generic`);
       setError(errorMessage);
+      notifyError(errorMessage);
     } finally {
       setLoading(false);
     }

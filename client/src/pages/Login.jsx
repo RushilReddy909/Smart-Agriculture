@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { api } from "../utils/axiosInstances";
+import { notifySuccess, notifyError, getErrorMessage } from "../utils/toast";
 import * as Yup from "yup";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
@@ -37,16 +38,15 @@ function Login() {
 
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
-    // Simulate API call
     try {
       const res = await api.post("/auth/login", data);
       const token = res.data.accessToken;
 
-      //TODO Toast
       login(token);
+      notifySuccess("Logged in successfully!");
       navigate("/features");
     } catch (err) {
-      //TODO Toast
+      notifyError(getErrorMessage(err, "Login failed. Please check your credentials and try again."));
     }
   };
 

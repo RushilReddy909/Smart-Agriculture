@@ -8,8 +8,8 @@ import {
   TbMicrophone,
 } from "react-icons/tb";
 import { api } from "../utils/axiosInstances";
+import { notifyError } from "../utils/toast";
 import useChatStore from "../store/useChatStore";
-import useLanguageStore from "../store/useLanguageStore";
 
 const renderContentWithLinks = (content) => {
   const parts = [];
@@ -63,7 +63,6 @@ const ChatWidget = () => {
     startRecording,
     stopRecording,
   } = useChatStore();
-  const { language } = useLanguageStore();
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -100,6 +99,7 @@ const ChatWidget = () => {
         "Sorry, I encountered an error. Please try again in a moment.";
 
       addMessage("assistant", errorMessage);
+      notifyError(errorMessage);
     } finally {
       setLoading(false);
     }

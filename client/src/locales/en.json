@@ -200,10 +200,22 @@
       "subtitle": "Simple, low-cost, and effective preparations like vermicompost, neem oil spray, and garlic–chili extract to manage pests while enriching soil health.",
       "note": "Tip: Always test any spray on a small area first and apply in the evening to avoid leaf burn.",
       "benefits": {
-        "1": { "title": "Safe for crops", "desc": "Gentle on plants when used properly." },
-        "2": { "title": "Residue-free", "desc": "Minimal chemical residues on produce." },
-        "3": { "title": "Low-cost inputs", "desc": "Use farm waste and common ingredients." },
-        "4": { "title": "Soil friendly", "desc": "Supports microbes and soil structure." }
+        "1": {
+          "title": "Safe for crops",
+          "desc": "Gentle on plants when used properly."
+        },
+        "2": {
+          "title": "Residue-free",
+          "desc": "Minimal chemical residues on produce."
+        },
+        "3": {
+          "title": "Low-cost inputs",
+          "desc": "Use farm waste and common ingredients."
+        },
+        "4": {
+          "title": "Soil friendly",
+          "desc": "Supports microbes and soil structure."
+        }
       },
       "images": {
         "vermicompost_alt": "Vermicompost pile ready for use",
@@ -269,7 +281,8 @@
         "3": "Maintain field hygiene: remove heavily infested leaves and weeds."
       }
     }
-  },"PestDiagnosisPage": {
+  },
+  "PestDiagnosisPage": {
     "header": {
       "badge": "AI-Powered Pest & Disease Detection",
       "title": "Pest & Disease Diagnosis",
@@ -349,6 +362,26 @@
         "results": "results",
         "prev": "Prev",
         "next": "Next"
+      },
+      "mandi": {
+        "results_title": "Mandi Prices",
+        "state_label": "State",
+        "district_label": "District",
+        "state_placeholder": "Select State",
+        "district_placeholder": "Select District (Optional)",
+        "commodity_label": "Commodity",
+        "optional": "(Optional)",
+        "commodity_placeholder": "e.g., Tomato, Onion, Wheat",
+        "submit": "Get Mandi Prices",
+        "loading": "Loading...",
+        "empty": "Select a State (required) and optionally District/Commodity, then click \"Get Mandi Prices\".",
+        "tips": {
+          "title": "Tips",
+          "1": "State is required — start by selecting a state.",
+          "2": "Add district and commodity to filter results further.",
+          "3": "Prices are updated daily from government mandis (AgMarkNet).",
+          "4": "Common states: Karnataka, Maharashtra, Punjab, Tamil Nadu."
+        }
       }
     }
   },
@@ -432,7 +465,19 @@
         "current_title": "Weather in",
         "forecast_title": "Next 5 Days",
         "humidity": "Humidity",
-        "wind": "Wind"
+        "wind": "Wind",
+        "hourly_title": "24-Hour Forecast",
+        "advisories_title": "Farm Advisories & Alerts",
+        "advisories_empty": "No weather advisories at this time. Conditions are favorable for normal farm operations.",
+        "recommended_action": "Recommended Action:",
+        "spray_title": "Best Spray Times",
+        "spray_subtitle": "Optimal conditions for pesticide/fertilizer application: low wind, no rain, suitable temperature",
+        "spray_temperature": "Temperature",
+        "spray_wind": "Wind",
+        "spray_humidity": "Humidity",
+        "spray_conditions": "Conditions",
+        "spray_ideal": "IDEAL",
+        "priority_info": "INFO"
       },
       "error": "Failed to fetch weather data."
     }

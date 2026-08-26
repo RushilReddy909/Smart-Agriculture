@@ -1,53 +1,33 @@
-import redis, { isConnected } from "../config/redis.js";
+import { rateLimit, ipKeyGenerator } from "express-rate-limit";
 
-const windowKey = (prefix, id, windowSec) => {
-  const window = Math.floor(Date.now() / (windowSec * 1000));
-  return `rl:${prefix}:${id}:${window}`;
-};
+// In-memory rate limiting. Counters live in this process only, so they reset
+// on restart and are not shared across instances. If the app is ever scaled
+// horizontally, swap in a shared store here rather than changing call sites.
 
-const rateLimit = ({ keyPrefix, limit, windowSec, identify }) => {
-  return async (req, res, next) => {
-    if (!redis || !isConnected) {
-      return next();
-    }
+const tooManyRequests = (windowSec) => (req, res) =>
+  res.status(429).json({
+    error: "Too many requests",
+    message: `Rate limit exceeded. Try again in ${windowSec} seconds`,
+  });
 
-    const id = identify(req);
-    if (!id) {
-      return next();
-    }
-
-    const key = windowKey(keyPrefix, id, windowSec);
-
-    try {
-      const count = await redis.incr(key);
-      if (count === 1) {
-        await redis.expire(key, windowSec);
-      }
-
-      if (count > limit) {
-        return res.status(429).json({
-          error: "Too many requests",
-          message: `Rate limit exceeded. Try again in ${windowSec} seconds`,
-        });
-      }
-
-      return next();
-    } catch (error) {
-      return next();
-    }
-  };
-};
-
+// Unauthenticated auth endpoints - keyed on IP.
 export const authRateLimiter = rateLimit({
-  keyPrefix: "auth",
+  windowMs: 60 * 1000,
   limit: 10,
-  windowSec: 60,
-  identify: (req) => `ip:${req.ip}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: tooManyRequests(60),
 });
 
+// Authenticated endpoints - keyed on user id, falling back to IP.
 export const userRateLimiter = rateLimit({
-  keyPrefix: "user",
+  windowMs: 60 * 1000,
   limit: 120,
-  windowSec: 60,
-  identify: (req) => (req.user?.id ? `user:${req.user.id}` : `ip:${req.ip}`),
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  // ipKeyGenerator normalizes IPv6 addresses to a subnet; returning req.ip
+  // directly here would trip the library's IPv6 validation.
+  keyGenerator: (req) =>
+    req.user?.id ? `user:${req.user.id}` : ipKeyGenerator(req.ip),
+  handler: tooManyRequests(60),
 });

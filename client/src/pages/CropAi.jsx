@@ -10,6 +10,8 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import LocationSelector from "../components/ui/LocationSelector";
 import { TbPlant, TbReportAnalytics } from "react-icons/tb";
+import { api } from "../utils/axiosInstances";
+import { notifySuccess, notifyError } from "../utils/toast";
 import useLanguageStore from "../store/useLanguageStore";
 
 // Validation Schema for the form inputs
@@ -30,24 +32,7 @@ const validationSchema = Yup.object().shape({
     .required("pH is required"),
   state: Yup.string().required("State is required"),
   district: Yup.string().required("District is required"),
-  month: Yup.string().required("Month is required"),
 });
-
-// Sample data for dropdowns
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 const AICropSuggestion = () => {
   const [prediction, setPrediction] = useState("");
@@ -108,41 +93,28 @@ const AICropSuggestion = () => {
     };
 
     try {
-      // Send request to Node backend which proxies to Python API
-      const response = await axios.post("/api/predict/crop", body);
+      // Send request to Node backend which proxies to Python API.
+      // Uses the shared `api` instance so the auth header and refresh
+      // interceptor are applied.
+      const response = await api.post("/predict/crop", body);
 
       if (response.data && response.data.result) {
         setPrediction(response.data.result);
+        notifySuccess("Crop prediction ready!");
       } else {
-        setApiError("The API returned an unexpected response.");
+        const msg = "The API returned an unexpected response.";
+        setApiError(msg);
+        notifyError(msg);
       }
     } catch (err) {
       console.error("API Error:", err);
-      setApiError(
+      const msg =
         err.response?.data?.detail ||
-          "Failed to get a prediction. Please try again."
-      );
+        "Failed to get a prediction. Please try again.";
+      setApiError(msg);
+      notifyError(msg);
     }
   };
-
-  // Custom Select component for consistent styling
-  const Select = ({ label, name, children, error, ...rest }) => (
-    <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
-      <select
-        name={name}
-        className={`input-field ${
-          error ? "border-red-500 focus:border-red-500 focus:ring-red-200" : ""
-        }`}
-        {...rest}
-      >
-        {children}
-      </select>
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -246,19 +218,6 @@ const AICropSuggestion = () => {
                   />
                 )}
               />
-
-              <Select
-                label="Month"
-                {...register("month")}
-                error={errors.month?.message}
-              >
-                <option value="">Select Month</option>
-                {months.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </Select>
 
               <Button
                 type="submit"

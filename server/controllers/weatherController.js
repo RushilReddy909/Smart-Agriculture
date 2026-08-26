@@ -3,12 +3,47 @@ import {
   generateAdvisories,
   findSprayWindows,
 } from "../utils/weatherAdvisories.js";
-import { getCached, setCache } from "../utils/cacheHelper.js";
-import {
-  buildLocationKey,
-  normalizeLatLon,
-  normalizeLocationPart,
-} from "../utils/keyHelpers.js";
+
+// The free 5-day endpoint returns 3-hourly slots. Group them into per-day
+// aggregates so both the forecast response and the advisory generator can
+// work from the same shape.
+const groupForecastByDay = (list = []) => {
+  const dailyMap = new Map();
+
+  list.forEach((item) => {
+    const date = new Date(item.dt * 1000).toDateString();
+    if (!dailyMap.has(date)) {
+      dailyMap.set(date, []);
+    }
+    dailyMap.get(date).push(item);
+  });
+
+  return Array.from(dailyMap.values())
+    .slice(0, 5)
+    .map((items) => {
+      const temps = items.map((i) => i.main.temp);
+      const humidities = items.map((i) => i.main.humidity);
+      const winds = items.map((i) => i.wind.speed);
+
+      return {
+        dt: items[0].dt,
+        temp: {
+          min: Math.min(...temps),
+          max: Math.max(...temps),
+        },
+        humidity: Math.round(
+          humidities.reduce((a, b) => a + b, 0) / humidities.length
+        ),
+        wind_speed:
+          Math.round((winds.reduce((a, b) => a + b, 0) / winds.length) * 10) /
+          10,
+        weather: [items[0].weather[0]],
+        rain: items.some((i) => i.rain)
+          ? { "3h": items.reduce((sum, i) => sum + (i.rain?.["3h"] || 0), 0) }
+          : undefined,
+      };
+    });
+};
 
 export const getWeatherForecast = async (req, res) => {
   try {
@@ -20,18 +55,7 @@ export const getWeatherForecast = async (req, res) => {
         .json({ error: "Latitude and longitude are required" });
     }
 
-    const locKey = buildLocationKey({
-      lat: normalizeLatLon(lat),
-      lon: normalizeLatLon(lon),
-    });
-
     const API_KEY = process.env.OPENWEATHER_API_KEY;
-    const cacheKey = `weather:${locKey}`;
-    const cached = await getCached(cacheKey);
-
-    if (cached) {
-      return res.json(cached);
-    }
 
     // Use free APIs: Current Weather + 5-day Forecast
     const [currentResponse, forecastResponse] = await Promise.all([
@@ -46,42 +70,8 @@ export const getWeatherForecast = async (req, res) => {
     const current = currentResponse.data;
     const forecast = forecastResponse.data;
 
-    // Group forecast by day
-    const dailyMap = new Map();
-    forecast.list.forEach((item) => {
-      const date = new Date(item.dt * 1000).toDateString();
-      if (!dailyMap.has(date)) {
-        dailyMap.set(date, []);
-      }
-      dailyMap.get(date).push(item);
-    });
-
-    // Calculate daily min/max/avg
-    const daily = Array.from(dailyMap.entries())
-      .slice(0, 5)
-      .map(([date, items]) => {
-        const temps = items.map((i) => i.main.temp);
-        const humidities = items.map((i) => i.main.humidity);
-        const winds = items.map((i) => i.wind.speed);
-
-        return {
-          dt: items[0].dt,
-          temp: {
-            min: Math.min(...temps),
-            max: Math.max(...temps),
-          },
-          humidity: Math.round(
-            humidities.reduce((a, b) => a + b, 0) / humidities.length
-          ),
-          wind_speed:
-            Math.round((winds.reduce((a, b) => a + b, 0) / winds.length) * 10) /
-            10,
-          weather: [items[0].weather[0]],
-          rain: items.some((i) => i.rain)
-            ? { "3h": items.reduce((sum, i) => sum + (i.rain?.["3h"] || 0), 0) }
-            : undefined,
-        };
-      });
+    // Group forecast into daily min/max/avg aggregates
+    const daily = groupForecastByDay(forecast.list);
 
     const weatherData = {
       lat: current.coord.lat,
@@ -110,7 +100,6 @@ export const getWeatherForecast = async (req, res) => {
     };
 
     const response_data = { success: true, data: weatherData };
-    await setCache(cacheKey, response_data, 3600); // 1 hour cache
     res.json(response_data);
   } catch (error) {
     console.error(
@@ -133,17 +122,6 @@ export const getFarmAdvisories = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Latitude and longitude are required" });
-    }
-
-    const locKey = buildLocationKey({
-      lat: normalizeLatLon(lat),
-      lon: normalizeLatLon(lon),
-    });
-    const cacheKey = `advisories:${locKey}`;
-    const cached = await getCached(cacheKey);
-
-    if (cached) {
-      return res.json(cached);
     }
 
     // Fetch weather forecast using free API
@@ -173,13 +151,14 @@ export const getFarmAdvisories = async (req, res) => {
         weather: [h.weather[0]],
         rain: h.rain,
       })),
-      daily: [],
+      // Without this the temperature, frost and dry-spell advisories are
+      // never generated.
+      daily: groupForecastByDay(forecastResponse.data.list),
     };
 
     const advisories = generateAdvisories(mockOneCallData);
 
     const response_data = { success: true, data: advisories };
-    await setCache(cacheKey, response_data, 3600); // 1 hour cache
     res.json(response_data);
   } catch (error) {
     console.error("❌ Error generating advisories:", error);
@@ -199,17 +178,6 @@ export const getSprayWindows = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Latitude and longitude are required" });
-    }
-
-    const locKey = buildLocationKey({
-      lat: normalizeLatLon(lat),
-      lon: normalizeLatLon(lon),
-    });
-    const cacheKey = `spray:${locKey}`;
-    const cached = await getCached(cacheKey);
-
-    if (cached) {
-      return res.json(cached);
     }
 
     // Fetch weather forecast using free API
@@ -233,7 +201,6 @@ export const getSprayWindows = async (req, res) => {
     const windows = findSprayWindows(hourly);
 
     const response_data = { success: true, data: { windows } };
-    await setCache(cacheKey, response_data, 3600); // 1 hour cache
     res.json(response_data);
   } catch (error) {
     console.error("❌ Error finding spray windows:", error);
@@ -251,14 +218,6 @@ export const searchLocation = async (req, res) => {
 
     if (!query) {
       return res.status(400).json({ error: "Search query is required" });
-    }
-
-    const normalizedQuery = normalizeLocationPart(query);
-    const cacheKey = `geo:${normalizedQuery}`;
-    const cached = await getCached(cacheKey);
-
-    if (cached) {
-      return res.json(cached);
     }
 
     const API_KEY = process.env.OPENWEATHER_API_KEY;
@@ -281,7 +240,6 @@ export const searchLocation = async (req, res) => {
     }));
 
     const resp = { success: true, data: locations };
-    await setCache(cacheKey, resp, 86400); // cache geocoding for 24h
     res.json(resp);
   } catch (error) {
     console.error("❌ Error searching location:", error);

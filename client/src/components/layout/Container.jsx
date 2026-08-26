@@ -9,7 +9,7 @@ const Container = ({
   const sizes = {
     sm: 'max-w-4xl',
     default: 'max-w-7xl',
-    lg: 'max-w-8xl',
+    lg: 'max-w-[96rem]',
     full: 'max-w-full'
   };
   

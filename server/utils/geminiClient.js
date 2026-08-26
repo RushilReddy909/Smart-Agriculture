@@ -1,4 +1,3 @@
-// utils/geminiClient.js
 // server/utils/geminiClient.js
 import { GoogleGenerativeAI } from "@google/generative-ai";
 

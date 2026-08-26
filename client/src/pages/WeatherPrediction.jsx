@@ -13,6 +13,7 @@ import DailyForecastGrid from "../components/weather/DailyForecastGrid";
 import { FaCloudSun } from "react-icons/fa";
 import { TbMapPinSearch } from "react-icons/tb";
 import useLanguageStore from "../store/useLanguageStore";
+import { notifySuccess, notifyError } from "../utils/toast";
 import {
   getWeatherForecast,
   getFarmAdvisories,
@@ -38,7 +39,9 @@ const WeatherPrediction = () => {
     // Build search query from state, district, or city
     const searchQuery = district || state || city;
     if (!searchQuery) {
-      setError("Please select a state/district or enter a city name.");
+      const msg = "Please select a state/district or enter a city name.";
+      setError(msg);
+      notifyError(msg);
       return;
     }
 
@@ -59,7 +62,9 @@ const WeatherPrediction = () => {
         !locationData.data ||
         locationData.data.length === 0
       ) {
-        setError("Location not found. Please try a different city.");
+        const msg = "Location not found. Please try a different city.";
+        setError(msg);
+        notifyError(msg);
         setIsLoading(false);
         return;
       }
@@ -81,6 +86,7 @@ const WeatherPrediction = () => {
       setAdvisories(advisoryData.data);
       setSprayWindows(sprayData.data?.windows || []);
       setAdvisories(advisoryData.data);
+      notifySuccess("Weather forecast loaded.");
 
       setTimeout(() => {
         document
@@ -91,15 +97,17 @@ const WeatherPrediction = () => {
       console.error("Weather fetch error:", err);
       console.error("Error response:", err.response);
 
+      let msg;
       if (err.response?.status === 401) {
-        setError("Please log in to view weather data.");
+        msg = "Please log in to view weather data.";
       } else {
-        setError(
+        msg =
           err.response?.data?.message ||
-            err.response?.data?.error ||
-            "Failed to fetch weather data. Please try again."
-        );
+          err.response?.data?.error ||
+          "Failed to fetch weather data. Please try again.";
       }
+      setError(msg);
+      notifyError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -147,12 +155,7 @@ const WeatherPrediction = () => {
               )}
               label="City Name"
             />
-            <Button
-              type="submit"
-              size="input"
-              disabled={isLoading}
-              className="w-full"
-            >
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? (
                 t("WeatherPredictionPage.weather.form.submitting")
               ) : (
@@ -171,16 +174,11 @@ const WeatherPrediction = () => {
             {isLoading && (
               <LoadingSpinner
                 message={t("WeatherPredictionPage.weather.forecast.loading")}
-                t={t}
               />
             )}
 
-            {error && (
-              <ErrorMessage
-                message={t("WeatherPredictionPage.weather.error")}
-                t={t}
-              />
-            )}
+            {/* Show the specific failure, not just the generic string */}
+            {error && <ErrorMessage message={error} />}
 
             {weatherData && (
               <>

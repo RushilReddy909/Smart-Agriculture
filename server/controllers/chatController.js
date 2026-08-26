@@ -45,7 +45,7 @@ const SYSTEM_PROMPT = `You are an AI farming assistant for a Smart Agriculture p
 
 4. Natural Pesticides Guide (/natural-pesticides) - Educational library of organic remedies and treatments. Includes recipes for neem spray, garlic-chili extract, vermicompost, bordeaux mixture, and other natural solutions. This is where farmers learn HOW to treat problems.
 
-5. AI Crop Prediction (/crop-prediction) - Personalized crop recommendations based on detailed inputs: soil nutrients (N, P, K levels), soil pH, temperature, humidity, rainfall, state, district, and planting month. Uses ML models to suggest the best crops for specific conditions.
+5. AI Crop Prediction (/crop-prediction) - Personalized crop recommendations based on soil nutrients (N, P, K levels), soil pH, and location (state and district). Temperature, humidity and rainfall are fetched automatically for that location. Uses ML models to suggest the best crops for specific conditions.
 
 6. Weather Prediction (/weather-prediction) - 5-day weather forecasts with temperature, rainfall predictions, humidity, and farming advisories. Helps plan irrigation, spraying, and harvesting activities.
 
@@ -95,8 +95,6 @@ export const handleChatMessage = async (req, res) => {
       return res.status(400).json({ error: "Valid message is required" });
     }
 
-    // Use stable free tier model - gemini-1.5-flash-latest
-    // gemini-2.0-flash-exp has quota limit of 0 on free tier
     const modelName = "gemini-2.5-flash";
     const model = genAI.getGenerativeModel({ model: modelName });
 

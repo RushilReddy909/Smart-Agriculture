@@ -1,9 +1,14 @@
 import os
+from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
 # Load the .env file from the parent directory
-load_dotenv(dotenv_path='./.env')
+_HERE = Path(__file__).resolve().parent.parent  # prediction_api/
+for candidate in (_HERE / ".env", _HERE.parent / ".env"):
+    if candidate.is_file():
+        load_dotenv(dotenv_path=candidate)
+        break
 
 def get_weather_data(state, district):
     """

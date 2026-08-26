@@ -94,10 +94,15 @@ const registerUser = async (req, res) => {
       password: hashedPass,
     });
 
+    // Never return the password hash or refresh token to the client
     return res.status(201).json({
       success: true,
       message: "User created successfully",
-      user: newUser,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+      },
     });
   } catch (err) {
     return res.status(500).json({
@@ -119,11 +124,19 @@ const refreshUserToken = async (req, res) => {
       });
     }
 
-    jwt.verify(refreshToken, process.env.JWT_REFRESH, (err, decoded) => {
+    jwt.verify(refreshToken, process.env.JWT_REFRESH, async (err, decoded) => {
       if (err) {
         return res.status(403).json({
           success: false,
           message: "Invalid or expired refresh token",
+        });
+      }
+
+      const user = await authModel.findById(decoded.id);
+      if (!user || user.refreshToken !== refreshToken) {
+        return res.status(403).json({
+          success: false,
+          message: "Refresh token has been revoked or reused",
         });
       }
 
@@ -132,6 +145,22 @@ const refreshUserToken = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "15m" }
       );
+
+      const newRefreshToken = jwt.sign(
+        { id: decoded.id },
+        process.env.JWT_REFRESH,
+        { expiresIn: "1d" }
+      );
+
+      user.refreshToken = newRefreshToken;
+      await user.save();
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000,
+      });
 
       return res.status(200).json({
         success: true,
@@ -155,10 +184,12 @@ const logoutUser = async (req, res) => {
       await authModel.findByIdAndUpdate(userID, { refreshToken: null });
     }
 
+    // Attributes must match those used when the cookie was set, or
+    // some browsers will refuse to clear it.
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     return res.status(200).json({

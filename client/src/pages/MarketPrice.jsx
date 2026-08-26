@@ -4,11 +4,10 @@ import Card from "../components/ui/Card";
 import LocationSelector from "../components/ui/LocationSelector";
 import PriceTable from "../components/ui/PriceTable";
 import useLanguageStore from "../store/useLanguageStore";
-import {
-  getMandiPrices,
-  searchCommodities,
-  getStates,
-} from "../services/priceService";
+import { notifySuccess, notifyError } from "../utils/toast";
+import { getMandiPrices } from "../services/priceService";
+
+const mandiPrefix = "MarketPricePage.market_price.mandi";
 
 const MarketPrice = () => {
   const [state, setState] = useState("");
@@ -24,9 +23,9 @@ const MarketPrice = () => {
 
     // State is required by the API
     if (!state) {
-      setError(
-        "State is required. Please enter a state name (e.g., Karnataka, Maharashtra)."
-      );
+      const msg = t(`${mandiPrefix}.tips.1`);
+      setError(msg);
+      notifyError(msg);
       return;
     }
 
@@ -39,12 +38,14 @@ const MarketPrice = () => {
         ...data,
         data: data.records || data.data || [],
       });
+      notifySuccess("Market prices loaded.");
     } catch (error) {
       console.error("Failed to fetch prices:", error);
-      setError(
+      const msg =
         error.response?.data?.message ||
-          "Failed to fetch market prices. Please try again."
-      );
+        "Failed to fetch market prices. Please try again.";
+      setError(msg);
+      notifyError(msg);
     } finally {
       setLoading(false);
     }
@@ -71,22 +72,25 @@ const MarketPrice = () => {
                 district={district}
                 onStateChange={(e) => setState(e.target.value)}
                 onDistrictChange={(e) => setDistrict(e.target.value)}
-                stateLabel="State"
-                districtLabel="District"
+                stateLabel={t(`${mandiPrefix}.state_label`)}
+                districtLabel={t(`${mandiPrefix}.district_label`)}
                 stateRequired={true}
                 districtRequired={false}
-                statePlaceholder="Select State"
-                districtPlaceholder="Select District (Optional)"
+                statePlaceholder={t(`${mandiPrefix}.state_placeholder`)}
+                districtPlaceholder={t(`${mandiPrefix}.district_placeholder`)}
               />
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Commodity <span className="text-gray-400">(Optional)</span>
+                  {t(`${mandiPrefix}.commodity_label`)}{" "}
+                  <span className="text-gray-400">
+                    {t(`${mandiPrefix}.optional`)}
+                  </span>
                 </label>
                 <input
                   type="text"
                   value={commodity}
                   onChange={(e) => setCommodity(e.target.value)}
-                  placeholder="e.g., Tomato, Onion, Wheat"
+                  placeholder={t(`${mandiPrefix}.commodity_placeholder`)}
                   className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-200"
                 />
               </div>
@@ -95,7 +99,9 @@ const MarketPrice = () => {
                 disabled={loading}
                 className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
               >
-                {loading ? "Loading..." : "Get Mandi Prices"}
+                {loading
+                  ? t(`${mandiPrefix}.loading`)
+                  : t(`${mandiPrefix}.submit`)}
               </button>
             </form>
           </Card>
@@ -105,7 +111,7 @@ const MarketPrice = () => {
             {/* Results Card */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
               <h3 className="text-lg font-semibold text-gray-900">
-                Mandi Prices
+                {t(`${mandiPrefix}.results_title`)}
               </h3>
               {prices?.isMockData && (
                 <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -125,8 +131,7 @@ const MarketPrice = () => {
                 <p className="text-red-600 mt-2">{error}</p>
               ) : !prices ? (
                 <p className="text-gray-600 mt-2">
-                  Enter a <strong>State name</strong> (required) and optionally
-                  District/Commodity, then click "Get Mandi Prices".
+                  {t(`${mandiPrefix}.empty`)}
                 </p>
               ) : prices.success === false ? (
                 <p className="text-red-600 mt-2">{prices.message}</p>
@@ -137,19 +142,13 @@ const MarketPrice = () => {
 
             {/* Tips Section */}
             <Card className="p-6 hover:shadow-lg transition-shadow">
-              <h3 className="text-lg font-semibold text-gray-900">Tips</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {t(`${mandiPrefix}.tips.title`)}
+              </h3>
               <ul className="list-disc pl-5 text-gray-700 space-y-1 mt-2">
-                <li>
-                  <strong>State is required</strong> - Start by entering a state
-                  name
-                </li>
-                <li>Add district and commodity to filter results further</li>
-                <li>
-                  Prices are updated daily from government mandis (AgMarkNet)
-                </li>
-                <li>
-                  Common states: Karnataka, Maharashtra, Punjab, Tamil Nadu
-                </li>
+                {["1", "2", "3", "4"].map((n) => (
+                  <li key={n}>{t(`${mandiPrefix}.tips.${n}`)}</li>
+                ))}
               </ul>
             </Card>
           </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingSpinner = ({ message = "Loading...", t }) => {
+const LoadingSpinner = ({ message = "Loading..." }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-white">
       <div className="text-center text-gray-500">

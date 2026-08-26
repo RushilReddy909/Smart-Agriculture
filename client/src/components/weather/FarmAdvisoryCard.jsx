@@ -5,10 +5,7 @@ const FarmAdvisoryCard = ({ advisories, t }) => {
   if (!advisories || advisories.length === 0) {
     return (
       <div className="text-center text-gray-500 mb-8">
-        <p>
-          No weather advisories at this time. Conditions are favorable for
-          normal farm operations.
-        </p>
+        <p>{t("WeatherPredictionPage.weather.forecast.advisories_empty")}</p>
       </div>
     );
   }
@@ -32,7 +29,7 @@ const FarmAdvisoryCard = ({ advisories, t }) => {
           </svg>
         </div>
         <h3 className="text-2xl font-bold text-gray-800">
-          Farm Advisories & Alerts
+          {t("WeatherPredictionPage.weather.forecast.advisories_title")}
         </h3>
       </div>
       <div className="space-y-3">
@@ -59,7 +56,7 @@ const FarmAdvisoryCard = ({ advisories, t }) => {
               >
                 {advisory.priority
                   ? String(advisory.priority).toUpperCase()
-                  : "INFO"}
+                  : t("WeatherPredictionPage.weather.forecast.priority_info")}
               </span>
               <div className="flex-1">
                 <p className="font-bold text-gray-900 text-lg">
@@ -72,7 +69,10 @@ const FarmAdvisoryCard = ({ advisories, t }) => {
                   <div className="mt-2 p-2 bg-white rounded border-l-2 border-green-500">
                     <p className="text-sm text-gray-800">
                       <strong className="text-green-700">
-                        💡 Recommended Action:
+                        💡{" "}
+                        {t(
+                          "WeatherPredictionPage.weather.forecast.recommended_action"
+                        )}
                       </strong>{" "}
                       {advisory.action}
                     </p>

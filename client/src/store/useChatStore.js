@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import AudioRecorder from "../utils/audioRecorder";
 import { api } from "../utils/axiosInstances";
+import { notifyError } from "../utils/toast";
 import useLanguageStore from "./useLanguageStore";
 
 const CHAT_STORAGE_KEY = "smart-ag-chat-history";
@@ -76,7 +77,11 @@ const useChatStore = create((set, get) => ({
         // onDataAvailable callback
         (audioBlob, mimeType) => {
           const currentState = get();
-          const currentLanguage = useLanguageStore.getState().language;
+          // The store field is `currentLang` and holds codes like "EN"/"TEL";
+          // the backend expects lowercase ("en"/"tel").
+          const currentLanguage = (
+            useLanguageStore.getState().currentLang || "EN"
+          ).toLowerCase();
           currentState.sendVoiceMessage(audioBlob, mimeType, currentLanguage);
         },
         // onError callback
@@ -177,6 +182,7 @@ const useChatStore = create((set, get) => ({
               "Sorry, I couldn't process your voice message. Please try again in a moment.";
 
             state.addMessage("assistant", errorMessage);
+            notifyError(errorMessage);
             reject(error);
           } finally {
             set({ loading: false });

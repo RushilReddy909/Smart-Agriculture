@@ -1,5 +1,7 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Navigation from "./components/layout/Navigation";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import Home from "./pages/Home";
@@ -73,6 +75,16 @@ function App() {
           <ChatWidget />
         </Suspense>
       )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }

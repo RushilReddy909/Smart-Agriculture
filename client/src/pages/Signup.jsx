@@ -10,6 +10,7 @@ import Button from "../components/ui/Button";
 import Container from "../components/layout/Container";
 import { TbUserSquareRounded } from "react-icons/tb";
 import { api } from "../utils/axiosInstances";
+import { notifySuccess, notifyError, getErrorMessage } from "../utils/toast";
 import useLanguageStore from "../store/useLanguageStore";
 
 // 1. Define the validation schema with Yup
@@ -22,7 +23,7 @@ const validationSchema = Yup.object().shape({
     .email("Please enter a valid email"),
   password: Yup.string()
     .required("Password is required")
-    .min(6, "Password must be at least 6 characters"),
+    .min(8, "Password must be at least 8 characters"),
   cnfpass: Yup.string()
     .required("Please confirm your password")
     .oneOf([Yup.ref("password"), null], "Passwords must match"),
@@ -46,12 +47,12 @@ function Signup() {
   // 3. This function only runs on successful validation
   const onSubmit = async (data) => {
     try {
-      const res = await api.post("/auth/register", data);
+      await api.post("/auth/register", data);
 
-      //TODO toast
+      notifySuccess("Account created successfully! Please log in.");
       navigate("/login");
     } catch (err) {
-      //TODO toast
+      notifyError(getErrorMessage(err, "Signup failed. Please try again."));
     }
   };
 

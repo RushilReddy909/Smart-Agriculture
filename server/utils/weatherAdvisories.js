@@ -82,10 +82,16 @@ export function generateAdvisories(forecast) {
       });
     }
 
-    // Dry spell check
+    // Dry spell check. `rain` may be a plain number or OpenWeather's
+    // { "3h": n } / { "1h": n } shape depending on the source endpoint.
+    const dailyRain = (d) =>
+      typeof d.rain === "number"
+        ? d.rain
+        : d.rain?.["3h"] || d.rain?.["1h"] || 0;
+
     const rainNext5d = daily
       .slice(0, 5)
-      .reduce((sum, d) => sum + (d.rain || 0), 0);
+      .reduce((sum, d) => sum + dailyRain(d), 0);
     if (rainNext5d < 2) {
       advisories.push({
         title: "Dry Spell Forecast",
@@ -144,7 +150,6 @@ export function findSprayWindows(hourly) {
     const windOk = wind <= 4.2; // < 15 km/h
     const noRain = !rain;
     const tempOk = temp >= 15 && temp <= 32;
-    const humidityOk = humidity >= 50 && humidity <= 85;
 
     if (windOk && noRain && tempOk && isGoodTime) {
       windows.push({

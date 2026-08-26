@@ -29,10 +29,9 @@ class Inputs(BaseModel):
     ph: float
     state: str
     district: str
-    month: str
 
 
-@app.post("/predict/")
+@app.post("/predict")
 async def predict(inputs: Inputs):
     try:
         # Call the single, consolidated function to get all weather data

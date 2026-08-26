@@ -31,20 +31,15 @@ const FileInput = ({
   const handleFile = (file) => {
     if (!validateFile(file)) return;
 
-    // Create preview
+    // A single read gives us both the preview data URL and the base64 payload.
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreview(reader.result);
+      const dataUrl = reader.result;
+      setPreview(dataUrl);
+      // Strip the "data:image/...;base64," prefix
+      onFileSelect(dataUrl.split(",")[1], file);
     };
     reader.readAsDataURL(file);
-
-    // Convert to base64 and call callback
-    const base64Reader = new FileReader();
-    base64Reader.onloadend = () => {
-      const base64String = base64Reader.result.split(",")[1]; // Remove data:image/...;base64, prefix
-      onFileSelect(base64String, file);
-    };
-    base64Reader.readAsDataURL(file);
   };
 
   const handleDrag = (e) => {

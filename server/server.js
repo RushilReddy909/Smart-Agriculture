@@ -10,9 +10,12 @@ import pestRoutes from "./routes/pestRoutes.js";
 import priceRoutes from "./routes/priceRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import predictionRoutes from "./routes/predictionRoutes.js";
+import dns from 'node:dns';
 
 import path from "path";
 import { fileURLToPath } from "url";
+
+dns.setServers(['1.1.1.1', '1.1.0.0']); // Set DNS servers to Cloudflare's public DNS
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,11 +45,13 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(buildPath));
 
   app.get("/{*any}", (req, res) => {
-    res.sendFile(buildPath, "index.html");
+    res.sendFile(path.join(buildPath, "index.html"));
   });
 }
 
-app.listen(PORT, async () => {
-  await connectDB();
+// Connect to the database before accepting any requests
+await connectDB();
+
+app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });

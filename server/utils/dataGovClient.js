@@ -37,7 +37,7 @@ export async function fetchMandiPrices(filters = {}, options = {}) {
   const url = `${DATA_GOV_BASE_URL}/${RESOURCE_ID}?${params.toString()}`;
   console.log("📡 Fetching mandi prices from data.gov.in");
   console.log("🔍 Filters:", filters);
-  console.log("🌐 URL:", url);
+  // NOTE: never log `url` directly - it carries the api-key query parameter.
 
   const response = await fetch(url);
 

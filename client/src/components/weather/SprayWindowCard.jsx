@@ -23,12 +23,11 @@ const SprayWindowCard = ({ sprayWindows, t }) => {
           </svg>
         </div>
         <h3 className="text-2xl font-bold text-gray-800">
-          Best Spray Times (Next 48 Hours)
+          {t("WeatherPredictionPage.weather.forecast.spray_title")}
         </h3>
       </div>
       <p className="text-sm text-gray-600 mb-4">
-        Optimal conditions for pesticide/fertilizer application: Low wind, no
-        rain, suitable temperature
+        {t("WeatherPredictionPage.weather.forecast.spray_subtitle")}
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {sprayWindows.slice(0, 6).map((window, idx) => {
@@ -59,13 +58,19 @@ const SprayWindowCard = ({ sprayWindows, t }) => {
               </div>
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Temperature:</span>
+                  <span className="text-gray-600">
+                    {t(
+                      "WeatherPredictionPage.weather.forecast.spray_temperature"
+                    )}
+                  </span>
                   <span className="font-semibold">
                     {window.temp ? Math.round(window.temp) : "N/A"}°C
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Wind:</span>
+                  <span className="text-gray-600">
+                    {t("WeatherPredictionPage.weather.forecast.spray_wind")}
+                  </span>
                   <span className="font-semibold">
                     {window.wind_speed
                       ? Math.round(window.wind_speed * 3.6)
@@ -74,15 +79,21 @@ const SprayWindowCard = ({ sprayWindows, t }) => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Humidity:</span>
+                  <span className="text-gray-600">
+                    {t("WeatherPredictionPage.weather.forecast.spray_humidity")}
+                  </span>
                   <span className="font-semibold">
                     {window.humidity || "N/A"}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Conditions:</span>
+                  <span className="text-gray-600">
+                    {t(
+                      "WeatherPredictionPage.weather.forecast.spray_conditions"
+                    )}
+                  </span>
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-semibold">
-                    IDEAL
+                    {t("WeatherPredictionPage.weather.forecast.spray_ideal")}
                   </span>
                 </div>
               </div>
@@ -90,12 +101,6 @@ const SprayWindowCard = ({ sprayWindows, t }) => {
           );
         })}
       </div>
-      {sprayWindows.length === 0 && (
-        <p className="text-center text-gray-500 py-6">
-          No ideal spray windows found in the next 48 hours. Check back later or
-          consider indoor protection.
-        </p>
-      )}
     </Card>
   );
 };

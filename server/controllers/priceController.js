@@ -3,30 +3,10 @@ import {
   parseMandiRecords,
   getMockMandiData,
 } from "../utils/dataGovClient.js";
-import { getCached, setCache } from "../utils/cacheHelper.js";
-import {
-  buildMandiKey,
-  buildTrendKey,
-  normalizeCommodity,
-  normalizeDate,
-  normalizeLocationPart,
-} from "../utils/keyHelpers.js";
 
 export const getMandiPrices = async (req, res) => {
   try {
     const { state, district, commodity, date } = req.query;
-
-    const cacheKey = `mandi:${buildMandiKey({
-      state,
-      district,
-      commodity,
-      date,
-    })}`;
-    const cached = await getCached(cacheKey);
-
-    if (cached) {
-      return res.json(cached);
-    }
 
     const filters = {};
     if (state) filters.state = state.trim();
@@ -103,9 +83,6 @@ export const getMandiPrices = async (req, res) => {
         ? "Showing results from a broader search area as no exact matches were found."
         : undefined,
     };
-
-    // Only cache for 1 hour if using mock data, 24 hours for real data
-    await setCache(cacheKey, response, isMockData ? 3600 : 86400);
 
     res.json(response);
   } catch (error) {
@@ -191,29 +168,25 @@ export const getStates = async (req, res) => {
 
 export const getPriceTrend = async (req, res) => {
   try {
-    const { state, district, commodity, days = 7 } = req.query;
+    const { state, district, commodity } = req.query;
 
     if (!commodity) {
       return res.status(400).json({ error: "Commodity is required" });
     }
 
-    const cacheKey = `trend:${buildTrendKey({
-      state,
-      district,
-      commodity,
-      days,
-    })}`;
-    const cached = await getCached(cacheKey);
-
-    if (cached) {
-      return res.json(cached);
-    }
+    // One upstream request is made per day, so clamp the window to keep a
+    // crafted ?days= value from fanning out into thousands of API calls.
+    const MAX_TREND_DAYS = 30;
+    const parsedDays = parseInt(req.query.days, 10);
+    const days = Number.isNaN(parsedDays)
+      ? 7
+      : Math.min(Math.max(parsedDays, 1), MAX_TREND_DAYS);
 
     // Fetch data for last N days
     const trend = [];
     const today = new Date();
 
-    for (let i = parseInt(days) - 1; i >= 0; i--) {
+    for (let i = days - 1; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split("T")[0];
@@ -241,7 +214,6 @@ export const getPriceTrend = async (req, res) => {
     }
 
     const response = { commodity, state, district, days, trend };
-    await setCache(cacheKey, response, 3600); // 1 hour cache
 
     res.json(response);
   } catch (error) {

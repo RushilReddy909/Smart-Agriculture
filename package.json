@@ -7,10 +7,22 @@
   "scripts": {
     "dev:server": "nodemon server/server.js",
     "dev:client": "cd client && npm run dev",
-    "dev:api": "cd prediction_api && python -m uvicorn main:app --host 0.0.0.0 --port 8000",
+    
+    "dev:api": "run-script-os",
+    "dev:api:win32": "cd prediction_api && venv\\Scripts\\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000",
+    "dev:api:default": "cd prediction_api && venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8000",
+
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:api\"",
+
+    "build:server": "npm install",
+    "build:client": "cd client && npm install && npm run build",
+
+    "build:api": "run-script-os",
+    "build:api:win32": "cd prediction_api && venv\\Scripts\\pip.exe install -r requirements.txt",
+    "build:api:default": "cd prediction_api && venv/bin/pip install -r requirements.txt",
+
     "start": "cross-env NODE_ENV=production node server/server.js",
-    "build": "npm install && cd client && npm install && npm run build"
+    "build": "npm run build:server && npm run build:client"
   },
   "repository": {
     "type": "git",
@@ -38,6 +50,7 @@
   "devDependencies": {
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "run-script-os": "^1.1.6"
   }
 }
